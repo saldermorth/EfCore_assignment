@@ -1,4 +1,5 @@
 ﻿using assignment_Dataaccess.Models;
+using assignment_Dataaccess.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +9,18 @@ namespace assignment_Dataaccess.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
+        private readonly IProductService _productService;
+
+        public ProductController(IProductService productService)
+        {
+            _productService = productService;
+        }
+
         #region Create
         [HttpPost]
-        public void CreateProduct(Products products)
+        public async Task CreateProduct(Products products) //Om man vill kan man här konvertera objektet här
         {
-
+            await _productService.CreateAsync(products);
         }
         #endregion
         #region Read

@@ -1,4 +1,6 @@
-﻿namespace assignment_Dataaccess.Models
+﻿using assignment_Dataaccess.Models.Enities;
+
+namespace assignment_Dataaccess.Models
 {
     public class Products
     {
@@ -7,5 +9,7 @@
         public string Description { get; set; } = null!;
         public decimal Price { get; set; }
         public int Stock { get; set; }
+        
+        public VendorsEntity VendorsId { get; set; } = null!;
     }
 }
