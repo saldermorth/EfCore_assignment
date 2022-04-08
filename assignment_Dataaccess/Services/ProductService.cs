@@ -39,12 +39,12 @@ namespace assignment_Dataaccess.Services
                     await _sqlContext.SaveChangesAsync();
                 }
 
-                var newProduct = new ProductsEntity
+                var Product = new ProductsEntity
                 {
                     Name = product.Name,
                     Description = product.Description,
                     Stock = product.Stock,
-                    Vendors = product.VendorsId
+                    //Vendors = product.
                     
                 };
                 _sqlContext.Products.Add(Product);
