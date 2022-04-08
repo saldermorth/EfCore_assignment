@@ -7,19 +7,18 @@ namespace assignment_Dataaccess.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class OrderController : ControllerBase
     {
-        private readonly ICustomerService _customerService;
-
-        public CustomerController(ICustomerService customerService)
+        private readonly IOrderService _orderService;
+        public OrderController(IOrderService orderService)
         {
-            _customerService = customerService;
+            _orderService = orderService;
         }
         #region Create
         [HttpPost]
-        public async Task CreateProduct(Customer cust) //Om man vill kan man här konvertera objektet här
+        public async Task CreateProduct(Order orders) //Om man vill kan man här konvertera objektet här
         {
-            await _customerService.CreateAsync(cust);
+            await _orderService.CreateAsync(orders);
         }
         #endregion
         #region Read
