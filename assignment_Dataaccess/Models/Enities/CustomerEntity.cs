@@ -9,7 +9,8 @@ namespace assignment_Dataaccess.Models.Enities
 
     public class CustomerEntity
     {
-        [Key]
+        [Key, Column(Order = 0)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
         [Required]
@@ -26,8 +27,8 @@ namespace assignment_Dataaccess.Models.Enities
 
         [Required]
         public int AddressId { get; set; }
-        public AddressEntity Address { get; set; } = null!; // FK to address table
-        public List<OrderEntity> Orders { get; set; } = null!; // FK from orders table
+        public virtual AddressEntity Address { get; set; } = null!; // FK to address table
+        public ICollection<OrderEntity> Orders { get; set; } = null!; // FK from orders table
 
     }
 }

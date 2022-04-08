@@ -1,14 +1,16 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace assignment_Dataaccess.Models.Enities
 {
     public class OrderItemsEntity
     {
-        [Key]
+        [Key, Column(Order = 0)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
         public int ProductId { get; set; }
-        public ProductsEntity Products { get; set; } = null!; //Fk to Producs Table
+        public virtual ProductsEntity Products { get; set; } = null!; //Fk to Producs Table
         [Required]
         public int Quantity { get; set; }
         //public OrderEntity Order { get; set; } = null!;//Fk from Orders table

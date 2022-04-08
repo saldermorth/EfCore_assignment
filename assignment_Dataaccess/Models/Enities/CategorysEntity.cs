@@ -7,7 +7,8 @@ namespace assignment_Dataaccess.Models.Enities
     [Index(nameof(Name), IsUnique = true)]
     public class CategorysEntity
     {
-        [Key]
+        [Key, Column(Order = 0)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
         [Column(TypeName = "nvarchar(250)")]

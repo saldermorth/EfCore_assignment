@@ -22,29 +22,42 @@ namespace assignment_Dataaccess.Services
             _sqlContext = sqlContext;
         }
 
-        public async Task CreateAsync(Products product )//(Products product)
+        public async Task CreateAsync(Products product)
         {
+         
             if(!await _sqlContext.Products.AnyAsync(x => x.Name == product.Name))//Om vi inte hittar en användare
             {
-                var vendor = await _sqlContext.Vendors.FirstOrDefaultAsync(x => x.Id == product.VendorsId.Id); //Vi kollar om det finns någon vendor
+                var vendor = await _sqlContext.Vendors.FirstOrDefaultAsync(x => x.Id == product.Vendors.Id); //Vi kollar om det finns någon vendor
                 if (vendor == null)//Annars skapar vi en
                 {
                     vendor = new VendorsEntity
                     {
-                        Name = product.VendorsId.Name //Och sätter in värdena vi behöver till vendors tabellen
+                        Name = product.Vendors.Name,
+                        Id = product.Vendors.Id//Och sätter in värdena vi behöver till vendors tabellen
                     };
                     _sqlContext.Vendors.Add(vendor);
                     await _sqlContext.SaveChangesAsync();
                 }
 
-                var newProduct = new ProductsEntity
+                var category = await _sqlContext.Categorys.FirstOrDefaultAsync(x => x.Name == product.Category.Name);
+                if (category == null)
+                {
+                    category = new CategorysEntity
+                    {
+                        Id = product.Category.Id,
+                        Name = product.Category.Name                        
+                    };    
+                 }
+
+                var Product = new ProductsEntity
                 {
                     Name = product.Name,
                     Description = product.Description,
                     Stock = product.Stock,
-                    Vendors = product.VendorsId
-                    
+                          VendorId = vendor.Id
                 };
+                _sqlContext.Products.Add(Product);
+                await _sqlContext.SaveChangesAsync();
             }
         }
 

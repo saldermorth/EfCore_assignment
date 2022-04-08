@@ -5,7 +5,8 @@ namespace assignment_Dataaccess.Models.Enities
 {
     public class PriceListEntity
     {
-        [Key]
+        [Key, Column(Order = 0)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
         [Column(TypeName = "char(3)")]
@@ -17,7 +18,7 @@ namespace assignment_Dataaccess.Models.Enities
         public DateTime Modified { get; set; }
         [Required]
         public int ProductId { get; set; }
-        public ProductsEntity Products { get; set; } = null!;
+        public virtual ProductsEntity Products { get; set; } = null!;
 
     }
 }

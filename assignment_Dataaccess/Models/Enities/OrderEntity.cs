@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace assignment_Dataaccess.Models.Enities
 {
     public class OrderEntity
     {
-        [Key]
+        [Key, Column(Order = 0)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
         public int CustomerId { get; set; }
@@ -13,9 +15,9 @@ namespace assignment_Dataaccess.Models.Enities
         public DateTime OrderDate { get; set; }
         [Required]
         public int ProductId { get; set; }
-        public ICollection<ProductsEntity> Products { get; set; } = null!; //FK from Products table
+        public virtual ICollection<ProductsEntity> Products { get; set; } = null!; //FK from Products table
         [Required]
         public int OrderItemId { get; set; }
-        public ICollection<OrderItemsEntity> CartItem { get; set; } = null!; 
+        public virtual ICollection<OrderItemsEntity> CartItem { get; set; } = null!; 
     }
 }

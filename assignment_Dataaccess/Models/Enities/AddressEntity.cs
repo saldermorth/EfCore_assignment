@@ -5,7 +5,8 @@ namespace assignment_Dataaccess.Models.Enities
 {
     public class AddressEntity
     {
-        [Key]        
+        [Key, Column(Order = 0)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]        
         public int Id { get; set; }
 
         [Required]
@@ -18,6 +19,6 @@ namespace assignment_Dataaccess.Models.Enities
         [Required]
         [Column(TypeName = "nvarchar(50)")]
         public string City { get; set; } = null!;
-        public ICollection<CustomerEntity> Residents { get; set; } = null!; //FK to Customers table
+        public virtual ICollection<CustomerEntity> Residents { get; set; } = null!; //FK to Customers table
     }
 }
