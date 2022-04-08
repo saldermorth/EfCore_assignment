@@ -39,22 +39,13 @@ namespace assignment_Dataaccess.Services
                     await _sqlContext.SaveChangesAsync();
                 }
 
-                var category = await _sqlContext.Categorys.FirstOrDefaultAsync(x => x.Name == product.Category.Name);
-                if (category == null)
-                {
-                    category = new CategorysEntity
-                    {
-                        Id = product.Category.Id,
-                        Name = product.Category.Name                        
-                    };    
-                 }
-
-                var Product = new ProductsEntity
+                var newProduct = new ProductsEntity
                 {
                     Name = product.Name,
                     Description = product.Description,
                     Stock = product.Stock,
-                          VendorId = vendor.Id
+                    Vendors = product.VendorsId
+                    
                 };
                 _sqlContext.Products.Add(Product);
                 await _sqlContext.SaveChangesAsync();
