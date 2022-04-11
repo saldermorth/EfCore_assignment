@@ -20,9 +20,12 @@ namespace assignment_Dataaccess.Services
             _context = context;
         }
 
-        public async Task CreateAsync(Customer customer)
+        public async Task CreateAsync(Customer customer)// Funkar nu men kommer dubbletter i address tabellen
         {
-            if (!await _context.Customers.AnyAsync(x => x.FirstName == customer.FirstName))
+
+
+            if (!await _context.Customers.AnyAsync(x => 
+            x.Email == customer.Email))//Går inte in i if satsen
             {
                 var addressEntity = await _context.Addresses.FirstOrDefaultAsync(x => x.Id == customer.Address.Id); //TODO vad får den in .Om addressid finns använd det annars skapa
                 if (addressEntity == null)

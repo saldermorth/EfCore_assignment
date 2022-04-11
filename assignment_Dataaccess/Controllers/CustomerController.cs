@@ -26,9 +26,9 @@ namespace assignment_Dataaccess.Controllers
                 await _customerService.CreateAsync(new Customer
                 {
                     Id = customer.Id,
-                    FirstName = "Gustav",
-                    LastName = "Berg",
-                    Email = "g@domain.com",
+                    FirstName = customer.FirstName,
+                    LastName = customer.LastName,
+                    Email = customer.Email,
                     Address = new AddressEntity
                     {
                         
