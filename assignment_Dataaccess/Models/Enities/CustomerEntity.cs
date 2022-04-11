@@ -28,7 +28,7 @@ namespace assignment_Dataaccess.Models.Enities
         [Required]
         public int AddressId { get; set; }
         public virtual AddressEntity Address { get; set; } = null!; // FK to address table
-        public ICollection<OrderEntity> Orders { get; set; } = null!; // FK from orders table
+        public ICollection<OrderEntity>? Orders { get; set; } = null!; // FK from orders table
 
     }
 }

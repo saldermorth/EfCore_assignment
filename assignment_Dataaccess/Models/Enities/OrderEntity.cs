@@ -10,7 +10,7 @@ namespace assignment_Dataaccess.Models.Enities
         public int Id { get; set; }
         [Required]
         public int CustomerId { get; set; } //Todo FK to CustomerID
-        public CustomerEntity Customers { get; set; } = null!; //FK to Customer table
+        public CustomerEntity? Customers { get; set; } = null!; //FK to Customer table
         [Required]
         public DateTime OrderDate { get; set; }
         [Required]
