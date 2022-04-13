@@ -19,7 +19,7 @@ namespace assignment_Dataaccess.Models.Enities
         [Required] 
         
         public decimal Price { get; set; }
-        public virtual OrderEntity ordered { get; set; } = null!;
+        //public virtual OrderEntity ordered { get; set; } = null!;
 
         [Required]
         public int Stock { get; set; }
