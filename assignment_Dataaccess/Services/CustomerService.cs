@@ -69,7 +69,9 @@ namespace assignment_Dataaccess.Services
                 items.Add(new Customer
                 {
                     Id = item.Id,
-                    FirstName = item.FirstName
+                    FirstName = item.FirstName,
+                    LastName= item.LastName,
+                    Email= item.Email
                 });
 
             return items;
@@ -83,26 +85,7 @@ namespace assignment_Dataaccess.Services
         }
 
 
-        /*   // GET: api/Products
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductEntity>>> GetProducts()
-        {
-            return await _context.Products.ToListAsync();
-        }
-
-        // GET: api/Products/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ProductEntity>> GetProductEntity(int id)
-        {
-            var productEntity = await _context.Products.FindAsync(id);
-
-            if (productEntity == null)
-            {
-                return NotFound();
-            }
-
-            return productEntity;
-        }*/
+      
 
         public Task<Customer> ReadAsyncById(int id)
         {

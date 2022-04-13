@@ -17,13 +17,13 @@ namespace assignment_Dataaccess.Models.Enities
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
         [Required]        
-        public int PriceId { get; set; }
-        public virtual PriceListEntity Price { get; set; } = null!; //Fk from PriceList table
+        public int Price { get; set; }
+      
         [Required]
         public int Stock { get; set; }
-        public virtual OrderEntity Order { get; set; } = null!; //Fk from Order table
-        public int VendorId { get; set; }
-        public virtual VendorsEntity Vendors { get; set; } = null!; //Fk to Vendors table
+        //public virtual OrderEntity Order { get; set; } = null!; //Fk from Order table
+        //public int VendorId { get; set; } TOdo
+        public string Vendor { get; set; } = null!; //Fk to Vendors table
 
 
     }

@@ -14,10 +14,8 @@ namespace assignment_Dataaccess.Models.Enities
         [Required]
         public DateTime OrderDate { get; set; }
         [Required]
-        public int ProductId { get; set; }
-        public virtual ICollection<ProductsEntity> Products { get; set; } = null!; //FK from Products table
-        [Required]
-        public int OrderItemId { get; set; }
+      
+        //public int OrderItemId { get; set; }
         public virtual ICollection<OrderItemsEntity> CartItem { get; set; } = null!; 
     }
 }

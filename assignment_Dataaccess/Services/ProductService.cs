@@ -27,17 +27,17 @@ namespace assignment_Dataaccess.Services
          
             if(!await _sqlContext.Products.AnyAsync(x => x.Name == product.Name))//Om vi inte hittar en användare
             {
-                var vendor = await _sqlContext.Vendors.FirstOrDefaultAsync(x => x.Id == product.Vendors.Id); //Vi kollar om det finns någon vendor
-                if (vendor == null)//Annars skapar vi en
-                {
-                    vendor = new VendorsEntity
-                    {
-                        Name = product.Vendors.Name,
-                        Id = product.Vendors.Id//Och sätter in värdena vi behöver till vendors tabellen
-                    };
-                    _sqlContext.Vendors.Add(vendor);//category products null och krockar med FK_Products_Orders_orderID borde inte behöva ngt i order tabellen hära
-                    await _sqlContext.SaveChangesAsync();
-                }
+                //var vendor = await _sqlContext.Vendors.FirstOrDefaultAsync(x => x.Id == product.Vendors.Id); //Vi kollar om det finns någon vendor
+                //if (vendor == null)//Annars skapar vi en
+                //{
+                //    vendor = new VendorsEntity
+                //    {
+                //        Name = product.Vendors.Name,
+                //        Id = product.Vendors.Id//Och sätter in värdena vi behöver till vendors tabellen
+                //    };
+                //    _sqlContext.Vendors.Add(vendor);//category products null och krockar med FK_Products_Orders_orderID borde inte behöva ngt i order tabellen hära
+                //    await _sqlContext.SaveChangesAsync();
+                //}
 
                 var Product = new ProductsEntity
                 {

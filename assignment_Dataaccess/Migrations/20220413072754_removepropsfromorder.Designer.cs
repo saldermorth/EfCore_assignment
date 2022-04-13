@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using assignment_Dataaccess.Models;
 
@@ -11,9 +12,10 @@ using assignment_Dataaccess.Models;
 namespace assignment_Dataaccess.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20220413072754_removepropsfromorder")]
+    partial class removepropsfromorder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -120,11 +122,14 @@ namespace assignment_Dataaccess.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomersId");
 
-                    b.ToTable("OrderItemsEntity");
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderItemsEntity", b =>
@@ -157,6 +162,33 @@ namespace assignment_Dataaccess.Migrations
                     b.ToTable("OrderItems");
                 });
 
+            modelBuilder.Entity("assignment_Dataaccess.Models.Enities.PriceListEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("CurrencyCode")
+                        .IsRequired()
+                        .HasColumnType("char(3)");
+
+                    b.Property<DateTime>("Modified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("money");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PriceLists");
+                });
+
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.ProductsEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -177,15 +209,20 @@ namespace assignment_Dataaccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int>("Price")
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PriceId")
                         .HasColumnType("int");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.Property<string>("Vendor")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("VendorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VendorsId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -194,7 +231,35 @@ namespace assignment_Dataaccess.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("PriceId")
+                        .IsUnique();
+
+                    b.HasIndex("VendorsId");
+
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("assignment_Dataaccess.Models.Enities.VendorsEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(250)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Vendors");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.CustomerEntity", b =>
@@ -238,7 +303,31 @@ namespace assignment_Dataaccess.Migrations
                         .WithMany("Products")
                         .HasForeignKey("CategoryId");
 
+                    b.HasOne("assignment_Dataaccess.Models.Enities.OrderEntity", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("assignment_Dataaccess.Models.Enities.PriceListEntity", "Price")
+                        .WithOne("Products")
+                        .HasForeignKey("assignment_Dataaccess.Models.Enities.ProductsEntity", "PriceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("assignment_Dataaccess.Models.Enities.VendorsEntity", "Vendors")
+                        .WithMany("CategoryProducts")
+                        .HasForeignKey("VendorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Price");
+
+                    b.Navigation("Vendors");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.AddressEntity", b =>
@@ -259,6 +348,17 @@ namespace assignment_Dataaccess.Migrations
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderEntity", b =>
                 {
                     b.Navigation("CartItem");
+                });
+
+            modelBuilder.Entity("assignment_Dataaccess.Models.Enities.PriceListEntity", b =>
+                {
+                    b.Navigation("Products")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("assignment_Dataaccess.Models.Enities.VendorsEntity", b =>
+                {
+                    b.Navigation("CategoryProducts");
                 });
 #pragma warning restore 612, 618
         }

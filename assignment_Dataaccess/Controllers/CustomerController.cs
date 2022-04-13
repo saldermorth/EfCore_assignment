@@ -28,7 +28,6 @@ namespace assignment_Dataaccess.Controllers
         {
             try
             {
-
                 await _customerService.CreateAsync(new Customer
                 {
                     Id = customer.Id,
@@ -37,20 +36,16 @@ namespace assignment_Dataaccess.Controllers
                     Email = customer.Email,
                     Address = new AddressEntity
                     {
-
                         City = customer.City,
                         Street = customer.Street,
                         ZipCode = customer.ZipCode
                     }
-
-
                 });
 
                 return Ok();
             }
             catch (Exception)
             {
-
                 return BadRequest();
             }
 
@@ -61,10 +56,8 @@ namespace assignment_Dataaccess.Controllers
         #region Read
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> Read()
-        {
-           
+        {           
                         return await _customerService.ReadAsync();
-
         }
 
     
