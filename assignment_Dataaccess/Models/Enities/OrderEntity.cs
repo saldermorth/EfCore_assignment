@@ -13,6 +13,7 @@ namespace assignment_Dataaccess.Models.Enities
         public CustomerEntity? Customers { get; set; } = null!; //FK to Customer table
         [Required]
         public DateTime OrderDate { get; set; }
+        public virtual ProductsEntity products { get; set; } = null!;
         [Required]
       
         //public int OrderItemId { get; set; }

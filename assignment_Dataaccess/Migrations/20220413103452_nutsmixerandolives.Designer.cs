@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using assignment_Dataaccess.Models;
 
@@ -11,9 +12,10 @@ using assignment_Dataaccess.Models;
 namespace assignment_Dataaccess.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20220413103452_nutsmixerandolives")]
+    partial class nutsmixerandolives
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,7 +126,7 @@ namespace assignment_Dataaccess.Migrations
 
                     b.HasIndex("CustomersId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("OrderItemsEntity");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderItemsEntity", b =>

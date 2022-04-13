@@ -29,17 +29,18 @@ namespace assignment_Dataaccess.Services
             {// foreach (var item in await _context.Customers.ToListAsync()) Bara för att hämta från DB ?
                 foreach (var cartitem in order.OrderItem)
                 {
-                    if (await _context.Products.AnyAsync(x => x.Id == cartitem.ProductsID))
+                    if (await _context.Products.AnyAsync(x => x.Id == cartitem.ProductsID))// om produkten finns skapa en order
                     {
                         var orderItemsEntity = new OrderItemsEntity
                         {
                             Id = cartitem.Id,
                             ProductId = cartitem.ProductsID,
-                            Quantity = cartitem.Quantity
+                            Quantity = cartitem.Quantity,
+                            
                         };
-                        _context.OrderItems.Add(orderItemsEntity);
+                        _context.OrderItems.Add(orderItemsEntity);//Products är null
                         await _context.SaveChangesAsync();// fail hära pga objekt finns inte i under categorier
-
+                        //sparar inte i databasen nu
 
 
 
@@ -51,7 +52,7 @@ namespace assignment_Dataaccess.Services
                             CartItem = (ICollection<OrderItemsEntity>)order.OrderItem
                         };
 
-                        _context.OrderItemsEntity.Add(orderEntity);
+                        _context.Orders.Add(orderEntity);
                         await _context.SaveChangesAsync();
                     }
                     

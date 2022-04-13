@@ -16,9 +16,11 @@ namespace assignment_Dataaccess.Models.Enities
         [Column(TypeName = "nvarchar(250)")]
         public string Name { get; set; } = null!;
         public string Description { get; set; } = null!;
-        [Required]        
-        public int Price { get; set; }
-      
+        [Required] 
+        
+        public decimal Price { get; set; }
+        public virtual OrderEntity ordered { get; set; } = null!;
+
         [Required]
         public int Stock { get; set; }
         //public virtual OrderEntity Order { get; set; } = null!; //Fk from Order table
