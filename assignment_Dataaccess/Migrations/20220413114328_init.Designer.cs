@@ -12,7 +12,7 @@ using assignment_Dataaccess.Models;
 namespace assignment_Dataaccess.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20220408071312_init")]
+    [Migration("20220413114328_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,21 +116,20 @@ namespace assignment_Dataaccess.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CustomersId")
+                    b.Property<int?>("CustomersId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("OrderItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
+                    b.Property<int>("productsId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomersId");
+
+                    b.HasIndex("productsId");
 
                     b.ToTable("Orders");
                 });
@@ -142,15 +141,10 @@ namespace assignment_Dataaccess.Migrations
                         .HasColumnType("int")
                         .HasColumnOrder(0);
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
                     b.Property<int?>("OrderEntityId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductsId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -160,36 +154,7 @@ namespace assignment_Dataaccess.Migrations
 
                     b.HasIndex("OrderEntityId");
 
-                    b.HasIndex("ProductsId");
-
                     b.ToTable("OrderItems");
-                });
-
-            modelBuilder.Entity("assignment_Dataaccess.Models.Enities.PriceListEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnOrder(0);
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("CurrencyCode")
-                        .IsRequired()
-                        .HasColumnType("char(3)");
-
-                    b.Property<DateTime>("Modified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("money");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PriceLists");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.ProductsEntity", b =>
@@ -201,7 +166,7 @@ namespace assignment_Dataaccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -212,17 +177,15 @@ namespace assignment_Dataaccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PriceId")
-                        .HasColumnType("int");
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Stock")
                         .HasColumnType("int");
 
-                    b.Property<int>("VendorsId")
-                        .HasColumnType("int");
+                    b.Property<string>("Vendor")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -231,35 +194,7 @@ namespace assignment_Dataaccess.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("PriceId")
-                        .IsUnique();
-
-                    b.HasIndex("VendorsId");
-
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("assignment_Dataaccess.Models.Enities.VendorsEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnOrder(0);
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Vendors");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.CustomerEntity", b =>
@@ -277,24 +212,30 @@ namespace assignment_Dataaccess.Migrations
                 {
                     b.HasOne("assignment_Dataaccess.Models.Enities.CustomerEntity", "Customers")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomersId")
+                        .HasForeignKey("CustomersId");
+
+                    b.HasOne("assignment_Dataaccess.Models.Enities.ProductsEntity", "products")
+                        .WithMany()
+                        .HasForeignKey("productsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Customers");
+
+                    b.Navigation("products");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderItemsEntity", b =>
                 {
+                    b.HasOne("assignment_Dataaccess.Models.Enities.ProductsEntity", "Products")
+                        .WithMany()
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("assignment_Dataaccess.Models.Enities.OrderEntity", null)
                         .WithMany("CartItem")
                         .HasForeignKey("OrderEntityId");
-
-                    b.HasOne("assignment_Dataaccess.Models.Enities.ProductsEntity", "Products")
-                        .WithMany()
-                        .HasForeignKey("ProductsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("Products");
                 });
@@ -303,35 +244,9 @@ namespace assignment_Dataaccess.Migrations
                 {
                     b.HasOne("assignment_Dataaccess.Models.Enities.CategorysEntity", "Category")
                         .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("assignment_Dataaccess.Models.Enities.OrderEntity", "Order")
-                        .WithMany("Products")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("assignment_Dataaccess.Models.Enities.PriceListEntity", "Price")
-                        .WithOne("Products")
-                        .HasForeignKey("assignment_Dataaccess.Models.Enities.ProductsEntity", "PriceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("assignment_Dataaccess.Models.Enities.VendorsEntity", "Vendors")
-                        .WithMany("CategoryProducts")
-                        .HasForeignKey("VendorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.Navigation("Category");
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Price");
-
-                    b.Navigation("Vendors");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.AddressEntity", b =>
@@ -352,19 +267,6 @@ namespace assignment_Dataaccess.Migrations
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderEntity", b =>
                 {
                     b.Navigation("CartItem");
-
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("assignment_Dataaccess.Models.Enities.PriceListEntity", b =>
-                {
-                    b.Navigation("Products")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("assignment_Dataaccess.Models.Enities.VendorsEntity", b =>
-                {
-                    b.Navigation("CategoryProducts");
                 });
 #pragma warning restore 612, 618
         }
