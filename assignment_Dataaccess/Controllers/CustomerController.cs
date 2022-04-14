@@ -16,7 +16,7 @@ namespace assignment_Dataaccess.Controllers
         public CustomerController(ICustomerService customerService, SqlContext context)
         {
             _customerService = customerService;
-            _context = context;
+            _context = context; //To do ta bort
         }
 
        
@@ -76,7 +76,7 @@ namespace assignment_Dataaccess.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(); //Todo Flytta till service
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -103,18 +103,17 @@ namespace assignment_Dataaccess.Controllers
         #endregion
         #region Delete
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomerEntity(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var customerEntity = await _context.Customers.FindAsync(id);
-            if (customerEntity == null)
+            bool found = await _customerService.Delete(id);
+            
+            if (found)
             {
-                return NotFound();
+                return Ok($"Customer with id: {id} is deleted! ");
             }
 
-            _context.Customers.Remove(customerEntity);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return NotFound();
+            
         }
         #endregion
     }

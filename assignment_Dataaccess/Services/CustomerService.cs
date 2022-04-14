@@ -12,15 +12,16 @@ namespace assignment_Dataaccess.Services
         Task<ActionResult<IEnumerable<Customer>>> ReadAsync();
         Task<Customer> ReadAsyncById(int id);
         Task<IEnumerable<Customer>> ReadAsyncByEmail(string epost);
+        Task<bool> Delete(int id);
     }
     public class CustomerService : ICustomerService
     {
-        private readonly SqlContext _context;
+        private readonly SqlContext _sqlcontext;
        
 
         public CustomerService(SqlContext context)
         {
-            _context = context;
+            _sqlcontext = context;
             
         }
 
@@ -28,10 +29,10 @@ namespace assignment_Dataaccess.Services
         {
 
 
-            if (!await _context.Customers.AnyAsync(x => 
+            if (!await _sqlcontext.Customers.AnyAsync(x => 
             x.Email == customer.Email))//Går inte in i if satsen
             {
-                var addressEntity = await _context.Addresses.FirstOrDefaultAsync(x => x.Id == customer.Address.Id); //TODO vad får den in .Om addressid finns använd det annars skapa
+                var addressEntity = await _sqlcontext.Addresses.FirstOrDefaultAsync(x => x.Id == customer.Address.Id); //TODO vad får den in .Om addressid finns använd det annars skapa
                 if (addressEntity == null)
                 {
                     addressEntity = new AddressEntity
@@ -41,8 +42,8 @@ namespace assignment_Dataaccess.Services
                         City = customer.Address.City,
 
                     };
-                    _context.Addresses.Add(addressEntity);
-                    await _context.SaveChangesAsync();
+                    _sqlcontext.Addresses.Add(addressEntity);
+                    await _sqlcontext.SaveChangesAsync();
 
 
                     var customerEntity = new CustomerEntity
@@ -52,20 +53,34 @@ namespace assignment_Dataaccess.Services
                         Email = customer.Email,
                         Address = customer.Address
                     };
-                    _context.Customers.Add(customerEntity);
-                    await _context.SaveChangesAsync();
+                    _sqlcontext.Customers.Add(customerEntity);
+                    await _sqlcontext.SaveChangesAsync();
                 }
             }
         }
 
-      
+        public async Task<bool> Delete(int id)
+        {
+            var customerEntity = await _sqlcontext.Customers.FindAsync(id);
+            if (customerEntity != null)
+            {
+                _sqlcontext.Customers.Remove(customerEntity);
+                await _sqlcontext.SaveChangesAsync();
+                return true;
+            }
+
+          
+
+            return false;
+        }
+
         public async Task<ActionResult<IEnumerable<Customer>>> ReadAsync()
         {
            
 
             var items = new List<Customer>();
 
-            foreach (var item in await _context.Customers.ToListAsync())
+            foreach (var item in await _sqlcontext.Customers.ToListAsync())
                 items.Add(new Customer
                 {
                     Id = item.Id,

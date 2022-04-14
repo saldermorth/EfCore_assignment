@@ -1,6 +1,7 @@
 ﻿using assignment_Dataaccess.Models;
 using assignment_Dataaccess.Models.Enities;
 using assignment_Dataaccess.Models.Forms;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace assignment_Dataaccess.Services
@@ -8,9 +9,9 @@ namespace assignment_Dataaccess.Services
     public interface IProductService
     {
         Task CreateAsync(ProductForm product);
-        Task<Products> ReadAsync();
-        Task<Products> ReadAsyncById(int id);
-        Task<IEnumerable<Products>> ReadAsyncByEmail(string epost);
+        Task<ActionResult<IEnumerable<ProductForm>>> ReadAsync();
+        Task<ProductForm> ReadAsyncById(int id);
+        
 
 
     }
@@ -27,8 +28,7 @@ namespace assignment_Dataaccess.Services
         {
 
             if (!await _sqlContext.Products.AnyAsync(x => x.Name == product.ProductName))//Om vi inte hittar en product
-            {
-               
+            {             
 
                 var categoryEnt = new CategorysEntity();
 
@@ -59,19 +59,68 @@ namespace assignment_Dataaccess.Services
             }
         }
 
-        public Task<Products> ReadAsync()
+        public async Task<ActionResult<IEnumerable<ProductForm>>> ReadAsync()
         {
-            throw new NotImplementedException();
+                      
+
+            var allProducts = new List<ProductForm>();
+
+            foreach (var item in await _sqlContext.Products.Include(x => x.Category).ToListAsync())
+                allProducts.Add(new ProductForm
+                {
+                  ProductName = item.Name,
+                  Description = item.Description,
+                  Price = item.Price,
+                  Stock = item.Stock,
+                  CategoryId = item.Category.Id, 
+                  CategoryName = item.Category.Name,
+                  VendorName = item.Vendor                      
+                });
+
+
+            if (allProducts != null)
+            {
+                return allProducts;
+            }
+
+            return null!; 
         }
 
-        public Task<IEnumerable<Products>> ReadAsyncByEmail(string epost)
-        {
-            throw new NotImplementedException();
-        }
+        
 
-        public Task<Products> ReadAsyncById(int id)
+        public async Task<ProductForm> ReadAsyncById(int id)
         {
-            throw new NotImplementedException();
+
+        
+
+            var product =  await _sqlContext.Products.Include(x => x.Category).FirstAsync();
+
+            var productForm = new ProductForm();
+
+            if (product != null)
+            {
+               
+
+                if (product != null)
+                {
+                    productForm = new ProductForm
+                    {
+                        CategoryId = product.CategoryId,
+                        CategoryName = product.Category.Name,                        
+                        Description = product.Description,
+                        Price = product.Price,
+                        ProductName = product.Name,
+                        Stock = product.Stock,
+                        VendorName = product.Vendor
+                    };
+                    return productForm;
+                }
+               
+            }
+
+            return null;
+
+            
         }
     }
 }

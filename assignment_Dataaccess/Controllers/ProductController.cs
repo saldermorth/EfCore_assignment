@@ -25,10 +25,46 @@ namespace assignment_Dataaccess.Controllers
         }
         #endregion
         #region Read
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories()
+        {
+            return new OkObjectResult(await _productService.ReadAsync());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var product = await _productService.ReadAsyncById(id);
+            if (product != null)
+            {
+                return new OkObjectResult(product);
+
+               
+            }
+            return new NotFoundResult();
+           
+        }
         #endregion
         #region Update
+
         #endregion
         #region Delete
+           #region Delete
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCustomerEntity(int id)
+        {
+            //var customerEntity = await _productService.Delete(id);
+            //if (customerEntity == null)
+            //{
+            //    return NotFound();
+            //}
+
+            //_context.Customers.Remove(customerEntity);
+            //await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        #endregion
         #endregion
 
     }

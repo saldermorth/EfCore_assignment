@@ -10,7 +10,8 @@ namespace assignment_Dataaccess.Models.Enities
         [Key, Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }        
-        public int? CategoryId { get; set; }
+        public int CategoryId { get; set; }
+        [Required]
         public CategorysEntity Category { get; set; } = null!; //Fk to categorys table
         [Required]
         [Column(TypeName = "nvarchar(250)")]
