@@ -12,7 +12,7 @@ using assignment_Dataaccess.Models;
 namespace assignment_Dataaccess.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20220413114328_init")]
+    [Migration("20220414054857_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

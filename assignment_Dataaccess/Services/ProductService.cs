@@ -1,12 +1,13 @@
 ﻿using assignment_Dataaccess.Models;
 using assignment_Dataaccess.Models.Enities;
+using assignment_Dataaccess.Models.Forms;
 using Microsoft.EntityFrameworkCore;
 
 namespace assignment_Dataaccess.Services
 {
     public interface IProductService
     {
-        Task CreateAsync(Products product);
+        Task CreateAsync(ProductForm product);
         Task<Products> ReadAsync();
         Task<Products> ReadAsyncById(int id);
         Task<IEnumerable<Products>> ReadAsyncByEmail(string epost);
@@ -22,33 +23,39 @@ namespace assignment_Dataaccess.Services
             _sqlContext = sqlContext;
         }
 
-        public async Task CreateAsync(Products product)
+        public async Task CreateAsync(ProductForm product)
         {
-         
-            if(!await _sqlContext.Products.AnyAsync(x => x.Name == product.Name))//Om vi inte hittar en användare
-            {
-                //var vendor = await _sqlContext.Vendors.FirstOrDefaultAsync(x => x.Id == product.Vendors.Id); //Vi kollar om det finns någon vendor
-                //if (vendor == null)//Annars skapar vi en
-                //{
-                //    vendor = new VendorsEntity
-                //    {
-                //        Name = product.Vendors.Name,
-                //        Id = product.Vendors.Id//Och sätter in värdena vi behöver till vendors tabellen
-                //    };
-                //    _sqlContext.Vendors.Add(vendor);//category products null och krockar med FK_Products_Orders_orderID borde inte behöva ngt i order tabellen hära
-                //    await _sqlContext.SaveChangesAsync();
-                //}
 
-                var Product = new ProductsEntity
+            if (!await _sqlContext.Products.AnyAsync(x => x.Name == product.ProductName))//Om vi inte hittar en product
+            {
+               
+
+                var categoryEnt = new CategorysEntity();
+
+                if (!await _sqlContext.Categorys.AnyAsync(x => x.Id == product.CategoryId)) // If category not exists create it
                 {
-                    Name = product.Name,
-                    Description = product.Description,
-                    Stock = product.Stock,
-                    //Vendors = product.
-                    
-                };
-                _sqlContext.Products.Add(Product);
-                await _sqlContext.SaveChangesAsync();
+                    categoryEnt = new CategorysEntity
+                    {
+                        Id = product.CategoryId,
+                        Name = product.ProductName
+
+                    };
+                }
+
+                if (!await _sqlContext.Products.AnyAsync(x => x.Name == product.ProductName)) //If product name not already in db crate product
+                {
+                    var Product = new ProductsEntity
+                    {
+                        Category = categoryEnt,
+                        Name = product.ProductName,
+                        Description = product.Description,
+                        Stock = product.Stock,
+                        Vendor = product.VendorName
+                    };
+                    _sqlContext.Products.Add(Product);
+                    await _sqlContext.SaveChangesAsync();
+                }
+                
             }
         }
 

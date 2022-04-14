@@ -13,6 +13,6 @@ namespace assignment_Dataaccess.Models.Enities
         [Required]
         [Column(TypeName = "nvarchar(250)")]
         public string Name { get; set; } = null!;
-        public ICollection<ProductsEntity> Products { get; set; } = null!; // Fk from products table
+        public ICollection<ProductsEntity>? Products { get; set; } = null!; // Fk from products table
     }
 }

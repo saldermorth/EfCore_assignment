@@ -16,7 +16,7 @@ namespace assignment_Dataaccess.Models.Enities
         public virtual ProductsEntity products { get; set; } = null!;
         [Required]
       
-        //public int OrderItemId { get; set; }
+        
         public virtual ICollection<OrderItemsEntity> CartItem { get; set; } = null!; 
     }
 }
