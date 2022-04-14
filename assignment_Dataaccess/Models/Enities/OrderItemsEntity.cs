@@ -7,6 +7,7 @@ namespace assignment_Dataaccess.Models.Enities
     {
         [Key, Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [ForeignKey("Products")]
         public int Id { get; set; }
         [Required]
         public int ProductId { get; set; }
