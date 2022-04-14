@@ -60,7 +60,11 @@ namespace assignment_Dataaccess.Controllers
                         return await _customerService.ReadAsync();
         }
 
-    
+        [HttpGet("{email}")]
+        public async Task<ActionResult<CustomerForm>> ReadByEmail(string email)
+        {
+            return await _customerService.ReadAsyncByEmail(email);
+        }
 
         #endregion
         #region Update

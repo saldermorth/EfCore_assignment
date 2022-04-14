@@ -98,17 +98,24 @@ namespace assignment_Dataaccess.Services
         public async Task<CustomerForm> ReadAsyncByEmail(string email)
         {
             var customers = await ReadAsync();
+            var foundCustomer = new CustomerForm();
 
-            foreach (var customer in await _sqlcontext.Customers.ToListAsync())
+            foreach (var customer in await _sqlcontext.Customers.Include(x => x.Address).ToListAsync())
             {
-                if (!await _sqlcontext.Customers.AnyAsync(x => x.Email == email))                   
+                if (await _sqlcontext.Customers.AnyAsync(x => x.Email == email))                   
                 {
-                    var foundCustomer = new CustomerForm
+                    foundCustomer = new CustomerForm
                     {
-
-                    }
-                    return foundCustomer;
+                        FirstName = customer.FirstName,
+                        LastName = customer.LastName,
+                        Email = email,
+                        City = customer.Address.City,
+                        Street = customer.Address.Street,
+                        ZipCode = customer.Address.ZipCode
+                    };
+                   
                 }
+                return foundCustomer;
             }
             return null;
 
