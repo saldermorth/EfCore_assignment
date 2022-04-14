@@ -11,25 +11,26 @@ namespace assignment_Dataaccess.Services
         Task CreateAsync(Customer customer);
         Task<ActionResult<IEnumerable<Customer>>> ReadAsync();
         Task<Customer> ReadAsyncById(int id);
-        Task<IEnumerable<Customer>> ReadAsyncByEmail(string epost);
+        Task<CustomerForm> ReadAsyncByEmail(string epost);
         Task<bool> Delete(int id);
+        Task<CustomerForm> UpdateAsync(int id, CustomerForm customer);
     }
     public class CustomerService : ICustomerService
     {
         private readonly SqlContext _sqlcontext;
-       
+
 
         public CustomerService(SqlContext context)
         {
             _sqlcontext = context;
-            
+
         }
 
         public async Task CreateAsync(Customer customer)// Funkar nu men kommer dubbletter i address tabellen
         {
 
 
-            if (!await _sqlcontext.Customers.AnyAsync(x => 
+            if (!await _sqlcontext.Customers.AnyAsync(x =>
             x.Email == customer.Email))//Går inte in i if satsen
             {
                 var addressEntity = await _sqlcontext.Addresses.FirstOrDefaultAsync(x => x.Id == customer.Address.Id); //TODO vad får den in .Om addressid finns använd det annars skapa
@@ -69,14 +70,14 @@ namespace assignment_Dataaccess.Services
                 return true;
             }
 
-          
+
 
             return false;
         }
 
         public async Task<ActionResult<IEnumerable<Customer>>> ReadAsync()
         {
-           
+
 
             var items = new List<Customer>();
 
@@ -85,8 +86,8 @@ namespace assignment_Dataaccess.Services
                 {
                     Id = item.Id,
                     FirstName = item.FirstName,
-                    LastName= item.LastName,
-                    Email= item.Email
+                    LastName = item.LastName,
+                    Email = item.Email
                 });
 
             return items;
@@ -94,24 +95,64 @@ namespace assignment_Dataaccess.Services
 
         }
 
-        public Task<IEnumerable<CustomerEntity>> ReadAsyncByEmail(string epost)
+        public async Task<CustomerForm> ReadAsyncByEmail(string email)
         {
-            throw new NotImplementedException();
+            var customers = await ReadAsync();
+
+            foreach (var customer in await _sqlcontext.Customers.ToListAsync())
+            {
+                if (!await _sqlcontext.Customers.AnyAsync(x => x.Email == email))                   
+                {
+                    var foundCustomer = new CustomerForm
+                    {
+
+                    }
+                    return foundCustomer;
+                }
+            }
+            return null;
+
         }
-
-
-      
 
         public Task<Customer> ReadAsyncById(int id)
         {
             throw new NotImplementedException();
         }
 
-       
-
-        Task<IEnumerable<Customer>> ICustomerService.ReadAsyncByEmail(string epost)
+        public async Task<CustomerForm> UpdateAsync(int id, CustomerForm customer)
         {
-            throw new NotImplementedException();
+
+            var items = await _sqlcontext.Customers.Include(x => x.Address).ToListAsync();
+
+            var userEntity = items.FirstOrDefault(x => x.Id == id);
+
+
+            if (userEntity != null)
+            {
+                userEntity.FirstName = customer.FirstName;
+                userEntity.LastName = customer.LastName;
+                userEntity.Email = customer.Email;
+                //userEntity.Address = customer.Address;
+                _sqlcontext.Entry(userEntity).State = EntityState.Modified;
+                await _sqlcontext.SaveChangesAsync();
+                var updatedCustomer = new CustomerForm
+                {
+                    Id = id,
+                    FirstName = userEntity.FirstName,
+                    LastName = userEntity.LastName,
+                    Email = userEntity.Email,
+                    City = userEntity.Address.City,
+                    Street = userEntity.Address.Street,
+                    ZipCode = userEntity.Address.ZipCode
+
+                };
+                return updatedCustomer;
+            }
+
+            return null;
         }
+
+
+
     }
 }

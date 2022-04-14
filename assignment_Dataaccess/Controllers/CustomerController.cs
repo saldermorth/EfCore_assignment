@@ -65,30 +65,12 @@ namespace assignment_Dataaccess.Controllers
         #endregion
         #region Update
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, CustomerEntity category)
+        public async Task<IActionResult> PutCategory(int id, CustomerForm customer)
         {
-            if (id != category.Id)
-            {
-                return BadRequest();
-            }
+            
+          var result = await _customerService.UpdateAsync(id, customer);
 
-            _context.Entry(category).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync(); //Todo Flytta till service
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CustomerExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+          
 
             return NoContent();
         }
