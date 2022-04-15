@@ -9,8 +9,7 @@ namespace assignment_Dataaccess.Services
     public interface ICustomerService
     {
         Task CreateAsync(Customer customer);
-        Task<ActionResult<IEnumerable<Customer>>> ReadAsync();
-        Task<Customer> ReadAsyncById(int id);
+        Task<ActionResult<IEnumerable<Customer>>> ReadAsync();       
         Task<CustomerForm> ReadAsyncByEmail(string epost);
         Task<bool> Delete(int id);
         Task<CustomerForm> UpdateAsync(int id, CustomerForm customer);
@@ -121,10 +120,7 @@ namespace assignment_Dataaccess.Services
 
         }
 
-        public Task<Customer> ReadAsyncById(int id)
-        {
-            throw new NotImplementedException();
-        }
+      
 
         public async Task<CustomerForm> UpdateAsync(int id, CustomerForm customer)
         {

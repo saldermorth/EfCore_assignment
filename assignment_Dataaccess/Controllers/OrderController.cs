@@ -35,8 +35,24 @@ namespace assignment_Dataaccess.Controllers
 
         #endregion
         #region Read
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategories()
+        {
+            return new OkObjectResult(await _orderService.ReadAsync());
+        }
         #endregion
         #region Update
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateProduct(int id, List<CartItemUpdate> orders)
+        {
+           var item = await _orderService.UpdateAsyncById(id, orders);
+            if (item == null)
+            {
+                return NotFound();
+            }
+            return Ok($"Order with id :{item.Id} Updated. {item.OrderItem}");
+        }
         #endregion
         #region Delete
         #endregion

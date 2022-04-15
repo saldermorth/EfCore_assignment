@@ -6,7 +6,7 @@
         public int CustomerId { get; set; }
         public Customer Customer { get; set; } = null!;
         public DateTime OrderDate { get; set; }      
-        public OrderItemEntity OrderItem { get; set; } = null!;
+        public ICollection<OrderItem> OrderItem { get; set; } = null!;
 
     }
 }

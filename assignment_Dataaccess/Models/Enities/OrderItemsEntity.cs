@@ -6,8 +6,9 @@ namespace assignment_Dataaccess.Models.Enities
     public class OrderItemsEntity
     {
         [Key, Column(Order = 0)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+       
         [ForeignKey("Products")]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         [Required]
         public int ProductId { get; set; }

@@ -46,12 +46,12 @@ namespace assignment_Dataaccess.Controllers
         }
         #endregion
         #region Update
-
+        //TODO implement
         #endregion
         #region Delete
            #region Delete
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomerEntity(int id)
+        public async Task<IActionResult> DeleteCustomerEntity(int id) //TODO
         {
             //var customerEntity = await _productService.Delete(id);
             //if (customerEntity == null)

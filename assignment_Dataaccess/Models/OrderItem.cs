@@ -1,6 +1,6 @@
 ﻿namespace assignment_Dataaccess.Models
 {
-    public class OrderItemEntity
+    public class OrderItem
     {
         public int Id { get; set; } 
         public int ProductsID { get; set; }
