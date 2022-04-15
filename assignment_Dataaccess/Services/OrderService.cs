@@ -11,7 +11,7 @@ namespace assignment_Dataaccess.Services
         Task CreateAsync(OrderForm order);
         Task<List<OrderEntity>> ReadAsync();
         Task<Order> ReadAsyncById(int id);
-        Task<bool> UpdateAsyncById(int id, List<CartItemUpdate> orderForm);
+        //Task<bool> UpdateAsyncById(int id, List<CartItemUpdate> orderForm);
         
     }
     public class OrderService : IOrderService
@@ -26,21 +26,36 @@ namespace assignment_Dataaccess.Services
         public async Task CreateAsync(OrderForm order)
         {
             var orderList = new List<OrderItemsEntity>();
+            /*
+             Här tar jag in en OrderForm ifrån användaren Som har:
+            Id
+            CustomerId
+            ICollection<OrderItem> = Id, ProductID och Quantity.
+            DateTime             
+             */
 
-            // check if products id exits. or return.
-            if (!await _sqlcontext.OrderItems.AnyAsync(x => x.Id == order.Id)) 
-            {// foreach (var item in await _context.Customers.ToListAsync()) Bara för att hämta från DB ?
-                foreach (var cartitem in order.OrderItem)
+          
+            if (!await _sqlcontext.OrderItems.AnyAsync(x => x.Id == order.Id)) // check if products id exits. or return.
+            {
+                foreach (var cartitem in order.OrderItem) // För varje cartItem Gör följande.
                 {
                     if (!await _sqlcontext.Products.AnyAsync(x => x.Id == cartitem.Id))// om produkten finns skapa en order
                     {
-                        
+                        /*Jag måste skicka in en OrderItemsEntity och en OrdertEntity i DB därför behöver jag omvandla hära
+                         * OrderItemEntity. Som har:
+                         * Id
+                         * 
+                         * 
+                         */
+
                         var orderItemsEntity = new OrderItemsEntity
-                        {
-                            Id = cartitem.Id,                                                      
-                            Quantity = cartitem.Quantity                            
+                        {//ProductsId
+                                                                      
+                            //Quantity = cartitem.Quantity                            
                         };
-                        
+                        //
+
+
                         orderList.Add(orderItemsEntity); // Add to the list of items in order
                         _sqlcontext.OrderItems.Add(orderItemsEntity);//Products är null
                         await _sqlcontext.SaveChangesAsync();// fail hära pga objekt finns inte i under categorier
@@ -48,15 +63,15 @@ namespace assignment_Dataaccess.Services
 
 
                         // TODO enter Custermer ID here
-                        var orderEntity = new OrderEntity
-                        {
-                            Id = order.Id,
-                            OrderDate = order.OrderDate,
-                            CartItem = orderList
-                        };
+                        //var orderEntity = new OrderEntity
+                        //{
+                        //    Id = order.Id,
+                        //    OrderDate = order.OrderDate,
+                        //    CartItem = orderList
+                        //};
 
-                        _sqlcontext.Orders.Add(orderEntity);
-                        await _sqlcontext.SaveChangesAsync();
+                        //_sqlcontext.Orders.Add(orderEntity);
+                        //await _sqlcontext.SaveChangesAsync();
                     }
                     
                 }
@@ -67,16 +82,16 @@ namespace assignment_Dataaccess.Services
         {
             var items = new List<OrderEntity>();
 
-            foreach (var item in await _sqlcontext.Orders.Include(x => x.Customers).Include(x => x.products).ToListAsync())
-                items.Add(new OrderEntity 
-                {
-                 Id = item.Id,
-                 CartItem  = item.CartItem,
-                 Customers = item.Customers,
-                 OrderDate  =   item.OrderDate,
-                 products   =   item.products
+            //foreach (var item in await _sqlcontext.Orders.Include(x => x.Customers).Include(x => x.products).ToListAsync())
+            //    items.Add(new OrderEntity 
+            //    {
+            //     Id = item.Id,
+            //     CartItem  = item.CartItem,
+            //     Customers = item.Customers,
+            //     OrderDate  =   item.OrderDate,
+            //     //products   =   item.products
 
-                });
+            //    });
 
             return items;
         }
@@ -90,55 +105,55 @@ namespace assignment_Dataaccess.Services
 
        
 
-        public async Task<bool> UpdateAsyncById(int id, List<CartItemUpdate> orderform)
-        {
-            var items = await _sqlcontext.Orders.Include(x => x.Customers).Include(x => x.CartItem).ToListAsync();
+        //public Task<bool> UpdateAsyncById(int id, List<CartItemUpdate> orderform)
+        //{
+        //   //// var items = await _sqlcontext.Orders.Include(x => x.Customers).Include(x => x.CartItem).ToListAsync();
 
-            var order = items.FirstOrDefault(x => x.Id == id);
+        //   // //var order = items.FirstOrDefault(x => x.Id == id);
 
-            bool orderUpdated = false;
+        //   // bool orderUpdated = false;
 
-            if (order != null && orderform != null)
-            {
+        //   // if (order != null && orderform != null)
+        //   // {
                 
-               foreach (var item in orderform)
-                {
-                    order.CartItem.Add(new OrderItemsEntity
-                    { 
-                    Id = item.ProductID,
-                    Quantity = item.Quantity,
-                                       });
-                }
-                orderUpdated = true;
+        //   //    foreach (var item in orderform)
+        //   //     {
+        //   //         order.CartItem.Add(new OrderItemsEntity
+        //   //         { 
+        //   //         Id = item.ProductID,
+        //   //         Quantity = item.Quantity,
+        //   //                            });
+        //   //     }
+        //   //     orderUpdated = true;
 
 
-                _sqlcontext.Entry(order).State = EntityState.Modified;
-                await _sqlcontext.SaveChangesAsync();
+        //   //     _sqlcontext.Entry(order).State = EntityState.Modified;
+        //   //     await _sqlcontext.SaveChangesAsync();
 
-                 List<OrderItem> newCart = new List<OrderItem>();
-                foreach (var item in order.CartItem)
-                {
-                    newCart.Add(  new OrderItem
-                    {
-                        Id = item.Id,
-                        ProductsID = item.ProductsListItem.Id,
-                        Quantity = item.Quantity
-                    });
-                }
+        //   //      List<OrderItem> newCart = new List<OrderItem>();
+        //   //     foreach (var item in order.CartItem)
+        //   //     {
+        //   //         newCart.Add(  new OrderItem
+        //   //         {
+        //   //             Id = item.Id,
+                       
+        //   //             Quantity = item.Quantity
+        //   //         });
+        //   //     }
 
 
-                //var updatedOrder = new OrderForm
-                //{
-                //    Id  = order.Id,
-                //    CustomerID = order.Customers.Id,
-                //    OrderItem = order.CartItem 
-                //    }
-                //};
-                return orderUpdated;
-            }
+        //        //var updatedOrder = new OrderForm
+        //        //{
+        //        //    Id  = order.Id,
+        //        //    CustomerID = order.Customers.Id,
+        //        //    OrderItem = order.CartItem 
+        //        //    }
+        //        //};
+        //        //return null;
+        //    }
 
-            return orderUpdated;
-        }
+        //  return null;
+        //}
 
        
     }

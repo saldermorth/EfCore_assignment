@@ -43,16 +43,16 @@ namespace assignment_Dataaccess.Controllers
         }
         #endregion
         #region Update
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, List<CartItemUpdate> orders)
-        {
-           var item = await _orderService.UpdateAsyncById(id, orders);
-            if (!item)
-            {
-                return NotFound();
-            }
-            return Ok($"Order with id :{id} Updated. ");
-        }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdateProduct(int id, List<CartItemUpdate> orders)
+        //{
+        //  // var item = await _orderService.UpdateAsyncById(id, orders);
+        ////    if (!item)
+        ////    {
+        ////        return NotFound();
+        ////    }
+        ////    return Ok($"Order with id :{id} Updated. ");
+        //}
         #endregion
         #region Delete
         #endregion
