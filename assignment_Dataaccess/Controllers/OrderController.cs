@@ -47,11 +47,11 @@ namespace assignment_Dataaccess.Controllers
         public async Task<IActionResult> UpdateProduct(int id, List<CartItemUpdate> orders)
         {
            var item = await _orderService.UpdateAsyncById(id, orders);
-            if (item == null)
+            if (!item)
             {
                 return NotFound();
             }
-            return Ok($"Order with id :{item.Id} Updated. {item.OrderItem}");
+            return Ok($"Order with id :{id} Updated. ");
         }
         #endregion
         #region Delete

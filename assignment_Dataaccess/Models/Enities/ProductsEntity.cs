@@ -10,22 +10,28 @@ namespace assignment_Dataaccess.Models.Enities
         [Key, Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }        
+
         public int CategoryId { get; set; }
+
         [Required]
         public CategorysEntity Category { get; set; } = null!; //Fk to categorys table
+       
         [Required]
         [Column(TypeName = "nvarchar(250)")]
         public string Name { get; set; } = null!;
+
         public string Description { get; set; } = null!;
-        [Required] 
-        
+       
+        [Required]        
         public decimal Price { get; set; }
-        //public virtual OrderEntity ordered { get; set; } = null!;
+        
 
         [Required]
         public int Stock { get; set; }
-        //public virtual OrderEntity Order { get; set; } = null!; //Fk from Order table
+
+        //public virtual ICollection<OrderEntity> Order { get; set; } = null!; //Fk from Order table
         //public int VendorId { get; set; } TOdo
+
         public string Vendor { get; set; } = null!; //Fk to Vendors table
 
 

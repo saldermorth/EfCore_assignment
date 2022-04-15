@@ -11,7 +11,7 @@ namespace assignment_Dataaccess.Services
         Task CreateAsync(OrderForm order);
         Task<List<OrderEntity>> ReadAsync();
         Task<Order> ReadAsyncById(int id);
-        Task<OrderForm> UpdateAsyncById(int id, List<CartItemUpdate> orderForm);
+        Task<bool> UpdateAsyncById(int id, List<CartItemUpdate> orderForm);
         
     }
     public class OrderService : IOrderService
@@ -25,33 +25,34 @@ namespace assignment_Dataaccess.Services
 
         public async Task CreateAsync(OrderForm order)
         {
+            var orderList = new List<OrderItemsEntity>();
+
             // check if products id exits. or return.
             if (!await _sqlcontext.OrderItems.AnyAsync(x => x.Id == order.Id)) 
             {// foreach (var item in await _context.Customers.ToListAsync()) Bara för att hämta från DB ?
                 foreach (var cartitem in order.OrderItem)
                 {
-                    if (await _sqlcontext.Products.AnyAsync(x => x.Id == cartitem.ProductsID))// om produkten finns skapa en order
+                    if (!await _sqlcontext.Products.AnyAsync(x => x.Id == cartitem.Id))// om produkten finns skapa en order
                     {
+                        
                         var orderItemsEntity = new OrderItemsEntity
                         {
-                            
-                            ProductId = cartitem.ProductsID,
-                            Quantity = cartitem.Quantity,
-                            
-                            
+                            Id = cartitem.Id,                                                      
+                            Quantity = cartitem.Quantity                            
                         };
+                        
+                        orderList.Add(orderItemsEntity); // Add to the list of items in order
                         _sqlcontext.OrderItems.Add(orderItemsEntity);//Products är null
                         await _sqlcontext.SaveChangesAsync();// fail hära pga objekt finns inte i under categorier
-                        //sparar inte i databasen nu
+                                                             //sparar inte i databasen nu
 
 
-
+                        // TODO enter Custermer ID here
                         var orderEntity = new OrderEntity
                         {
                             Id = order.Id,
-                            CustomerId = order.CustomerID,
                             OrderDate = order.OrderDate,
-                            CartItem = (ICollection<OrderItemsEntity>)order.OrderItem
+                            CartItem = orderList
                         };
 
                         _sqlcontext.Orders.Add(orderEntity);
@@ -89,12 +90,13 @@ namespace assignment_Dataaccess.Services
 
        
 
-        public async Task<OrderForm> UpdateAsyncById(int id, List<CartItemUpdate> orderform)
+        public async Task<bool> UpdateAsyncById(int id, List<CartItemUpdate> orderform)
         {
             var items = await _sqlcontext.Orders.Include(x => x.Customers).Include(x => x.CartItem).ToListAsync();
 
             var order = items.FirstOrDefault(x => x.Id == id);
 
+            bool orderUpdated = false;
 
             if (order != null && orderform != null)
             {
@@ -103,10 +105,11 @@ namespace assignment_Dataaccess.Services
                 {
                     order.CartItem.Add(new OrderItemsEntity
                     { 
-                    Id = item.Product,
-                    Quantity    = item.Quantity
-                    });
+                    Id = item.ProductID,
+                    Quantity = item.Quantity,
+                                       });
                 }
+                orderUpdated = true;
 
 
                 _sqlcontext.Entry(order).State = EntityState.Modified;
@@ -118,23 +121,23 @@ namespace assignment_Dataaccess.Services
                     newCart.Add(  new OrderItem
                     {
                         Id = item.Id,
-                        ProductsID = item.ProductId,
-                        Quantity = item.ProductId
+                        ProductsID = item.ProductsListItem.Id,
+                        Quantity = item.Quantity
                     });
                 }
 
 
-                var updatedOrder = new OrderForm
-                {
-                    Id  = order.Id,
-                    CustomerID = order.CustomerId,
-                    OrderItem = newCart
-
-                };
-                return updatedOrder;
+                //var updatedOrder = new OrderForm
+                //{
+                //    Id  = order.Id,
+                //    CustomerID = order.Customers.Id,
+                //    OrderItem = order.CartItem 
+                //    }
+                //};
+                return orderUpdated;
             }
 
-            return null;
+            return orderUpdated;
         }
 
        

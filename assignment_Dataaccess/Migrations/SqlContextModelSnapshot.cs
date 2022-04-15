@@ -111,10 +111,7 @@ namespace assignment_Dataaccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CustomersId")
+                    b.Property<int>("CustomersId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("OrderDate")
@@ -139,10 +136,12 @@ namespace assignment_Dataaccess.Migrations
                         .HasColumnType("int")
                         .HasColumnOrder(0);
 
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
                     b.Property<int?>("OrderEntityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int>("ProductsListItemId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -151,6 +150,8 @@ namespace assignment_Dataaccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("OrderEntityId");
+
+                    b.HasIndex("ProductsListItemId");
 
                     b.ToTable("OrderItems");
                 });
@@ -210,7 +211,9 @@ namespace assignment_Dataaccess.Migrations
                 {
                     b.HasOne("assignment_Dataaccess.Models.Enities.CustomerEntity", "Customers")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomersId");
+                        .HasForeignKey("CustomersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("assignment_Dataaccess.Models.Enities.ProductsEntity", "products")
                         .WithMany()
@@ -225,17 +228,17 @@ namespace assignment_Dataaccess.Migrations
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderItemsEntity", b =>
                 {
-                    b.HasOne("assignment_Dataaccess.Models.Enities.ProductsEntity", "Products")
-                        .WithMany()
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("assignment_Dataaccess.Models.Enities.OrderEntity", null)
                         .WithMany("CartItem")
                         .HasForeignKey("OrderEntityId");
 
-                    b.Navigation("Products");
+                    b.HasOne("assignment_Dataaccess.Models.Enities.ProductsEntity", "ProductsListItem")
+                        .WithMany()
+                        .HasForeignKey("ProductsListItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProductsListItem");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.ProductsEntity", b =>

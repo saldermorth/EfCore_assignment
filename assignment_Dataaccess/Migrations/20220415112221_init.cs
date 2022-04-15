@@ -65,7 +65,7 @@ namespace assignment_Dataaccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CategoryId = table.Column<int>(type: "int", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(250)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -79,7 +79,8 @@ namespace assignment_Dataaccess.Migrations
                         name: "FK_Products_Categorys_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categorys",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -88,8 +89,7 @@ namespace assignment_Dataaccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    CustomersId = table.Column<int>(type: "int", nullable: true),
+                    CustomersId = table.Column<int>(type: "int", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     productsId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -100,7 +100,8 @@ namespace assignment_Dataaccess.Migrations
                         name: "FK_Orders_Customers_CustomersId",
                         column: x => x.CustomersId,
                         principalTable: "Customers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Orders_Products_productsId",
                         column: x => x.productsId,
@@ -113,8 +114,9 @@ namespace assignment_Dataaccess.Migrations
                 name: "OrderItems",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductsId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     OrderEntityId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -127,8 +129,8 @@ namespace assignment_Dataaccess.Migrations
                         principalTable: "Orders",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_OrderItems_Products_Id",
-                        column: x => x.Id,
+                        name: "FK_OrderItems_Products_ProductsId",
+                        column: x => x.ProductsId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -155,6 +157,11 @@ namespace assignment_Dataaccess.Migrations
                 name: "IX_OrderItems_OrderEntityId",
                 table: "OrderItems",
                 column: "OrderEntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_ProductsId",
+                table: "OrderItems",
+                column: "ProductsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomersId",
