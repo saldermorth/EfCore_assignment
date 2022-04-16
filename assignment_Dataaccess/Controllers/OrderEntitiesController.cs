@@ -19,19 +19,21 @@ namespace assignment_Dataaccess.Controllers
     {
         private readonly OrderEntityService _orderEntityService;
 
-        public OrderEntitiesController(SqlContext context)
+        public OrderEntitiesController(OrderEntityService orderEntityService)
         {
-           
+            _orderEntityService = orderEntityService;
         }
+
+       
         // POST: api/OrderEntities
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<OrderEntity>> PostOrderEntity(OrderForm orderEntity)
         {
-            var entity = _orderEntityService.CreateAsync(orderEntity);
+           await  _orderEntityService.CreateAsync(orderEntity);
            
 
-            return CreatedAtAction("GetOrderEntity", new { id = orderEntity.Id }, orderEntity);
+            return CreatedAtAction("GetOrderEntity", new { id = 1 }, orderEntity);
         }
 
 

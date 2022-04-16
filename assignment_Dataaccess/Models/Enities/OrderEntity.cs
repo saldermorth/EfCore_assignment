@@ -5,17 +5,27 @@ namespace assignment_Dataaccess.Models.Enities
 {
     public class OrderEntity
     {
-        [Key, Column(Order = 0)]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [Key]
         public int Id { get; set; }
+
         [Required]
-    
-        public CustomerEntity? Customers { get; set; } = null!; //FK to Customer table
+        public int CustomerId { get; set; }
+
+        [Required]
+        public string CustomerName { get; set; } = null!;
+
+        [Required]
+        public string Address { get; set; } = null!;
+
         [Required]
         public DateTime OrderDate { get; set; }
-        public ICollection<OrderItemsEntity> OrderItems { get; set; } = null!;
 
-       
+
+        //[Required]
+        //public string OrderStatus { get; set; } = null!;
+
+        public virtual ICollection<OrderItemsEntity> OrderRows { get; set; } = null!;
+
 
 
 

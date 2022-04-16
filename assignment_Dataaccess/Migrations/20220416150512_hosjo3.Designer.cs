@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using assignment_Dataaccess.Models;
 
@@ -11,9 +12,10 @@ using assignment_Dataaccess.Models;
 namespace assignment_Dataaccess.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    partial class SqlContextModelSnapshot : ModelSnapshot
+    [Migration("20220416150512_hosjo3")]
+    partial class hosjo3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -106,30 +108,20 @@ namespace assignment_Dataaccess.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CustomerEntityId")
+                    b.Property<int>("CustomersId")
                         .HasColumnType("int");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CustomerName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerEntityId");
+                    b.HasIndex("CustomersId");
 
                     b.ToTable("Orders");
                 });
@@ -138,26 +130,25 @@ namespace assignment_Dataaccess.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderEntityId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("ProductPrice")
-                        .HasColumnType("money");
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderEntityId");
+
+                    b.HasIndex("ProductsId");
 
                     b.ToTable("OrderItems");
                 });
@@ -215,20 +206,28 @@ namespace assignment_Dataaccess.Migrations
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderEntity", b =>
                 {
-                    b.HasOne("assignment_Dataaccess.Models.Enities.CustomerEntity", null)
+                    b.HasOne("assignment_Dataaccess.Models.Enities.CustomerEntity", "Customers")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerEntityId");
+                        .HasForeignKey("CustomersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customers");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderItemsEntity", b =>
                 {
-                    b.HasOne("assignment_Dataaccess.Models.Enities.OrderEntity", "Order")
-                        .WithMany("OrderRows")
-                        .HasForeignKey("OrderId")
+                    b.HasOne("assignment_Dataaccess.Models.Enities.OrderEntity", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderEntityId");
+
+                    b.HasOne("assignment_Dataaccess.Models.Enities.ProductsEntity", "Products")
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Order");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.ProductsEntity", b =>
@@ -259,7 +258,7 @@ namespace assignment_Dataaccess.Migrations
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderEntity", b =>
                 {
-                    b.Navigation("OrderRows");
+                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

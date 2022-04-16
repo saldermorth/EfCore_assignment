@@ -11,8 +11,9 @@ namespace assignment_Dataaccess.Services
         Task CreateAsync(OrderEntity order);
         Task<List<OrderEntity>> ReadAsync();
         Task<Order> ReadAsyncById(int id);
+        Task CreateAsyncTwo(OrderForm order);
         //Task<bool> UpdateAsyncById(int id, List<CartItemUpdate> orderForm);
-        
+
     }
     public class OrderService : IOrderService
     {
@@ -23,6 +24,71 @@ namespace assignment_Dataaccess.Services
             _sqlcontext = context;
         }
 
+
+        public async Task CreateAsyncTwo(OrderForm order)
+        {
+
+            //Här bygger vi en OrderEntity igenom att Bygga kopplade entiteter förs och sedan bygga ihop den.
+
+
+            //___________________________________________________________
+
+
+            var customerEntity = await _sqlcontext.Customers.Include(x => x.Address).FirstAsync(x => x.Id == order.CustomerID);
+
+
+            //___________________________________________________________________
+
+            var addressEntity = new AddressEntity
+            {
+                Id = customerEntity.Address.Id,
+                City = customerEntity.Address.City,
+                Street = customerEntity.Address.Street,
+                ZipCode = customerEntity.Address.ZipCode
+            };
+
+            //_________________________________________________________     
+            //Get with ID
+            var orderRows = new List<OrderItemsEntity>();  // creating OrdersItemEntity
+            foreach (var item in order.OrderItem)
+                orderRows.Add(new OrderItemsEntity
+                {
+
+                    // OrderId = order.Id,
+                    ProductName = item.ProductName,
+                    ProductPrice = item.Price,
+                    Quantity = item.Quantity
+
+                });
+
+            //------------------------------------------------------
+
+
+            //__________________________________________________________________
+            var orderEntity = new OrderEntity
+            {
+                //Id = order.Id,
+                Address = $"{addressEntity.Street}, {addressEntity.City} {addressEntity.ZipCode}",
+                CustomerId = customerEntity.Id,
+                CustomerName = $"{customerEntity.FirstName} {customerEntity.FirstName}",
+                OrderDate = order.OrderDate,
+                OrderRows = orderRows
+
+            };
+
+
+
+
+            _sqlcontext.Orders.Add(orderEntity);
+            await _sqlcontext.SaveChangesAsync();
+
+
+
+
+
+
+
+        }
         public async Task CreateAsync(OrderEntity order)
         {
             var orderList = new List<OrderItemsEntity>();
@@ -35,7 +101,7 @@ namespace assignment_Dataaccess.Services
              */
 
           
-            if (!await _sqlcontext.OrderItems.AnyAsync(x => x.Id == order.Id)) // check if products id exits. or return.
+           // if (!await _sqlcontext.OrderItems.AnyAsync(x => x.Id == order.Id)) // check if products id exits. or return.
             {
                 //foreach (var cartitem in order.OrderItem) // För varje cartItem Gör följande.
                 {

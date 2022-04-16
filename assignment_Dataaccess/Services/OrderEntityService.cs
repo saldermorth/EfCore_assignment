@@ -5,12 +5,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace assignment_Dataaccess.Services
 {
-    //Git check
+  
     public interface IOrderEntityService
     {
-        Task<bool> CreateAsync(OrderForm order);
-   
-        
+        Task CreateAsync(OrderForm order);
+
     }
     public class OrderEntityService : IOrderEntityService
     {
@@ -21,54 +20,69 @@ namespace assignment_Dataaccess.Services
             _sqlcontext = sqlcontext;
         }
 
-        public async Task<bool> CreateAsync(OrderForm order)
+        public async Task CreateAsync(OrderForm order)
         {
 
-
-            return true;
-
+            //Här bygger vi en OrderEntity igenom att Bygga kopplade entiteter förs och sedan bygga ihop den.
 
 
-           // if (!await _sqlcontext.Customers.AnyAsync(x =>
-           //x.Email == customer.Email))//Går inte in i if satsen
-           // {
-           //     var addressEntity = await _sqlcontext.Addresses.FirstOrDefaultAsync(x => x.Id == customer.Address.Id); //TODO vad får den in .Om addressid finns använd det annars skapa
-           //     if (addressEntity == null)
-           //     {
-           //         addressEntity = new AddressEntity
-           //         {
-           //             Street = customer.Address.Street,
-           //             ZipCode = customer.Address.ZipCode,
-           //             City = customer.Address.City,
-
-           //         };
-           //         _sqlcontext.Addresses.Add(addressEntity);
-           //         await _sqlcontext.SaveChangesAsync();
+            //___________________________________________________________
 
 
-           //         var customerEntity = new CustomerEntity
-           //         {
-           //             FirstName = customer.FirstName,
-           //             LastName = customer.LastName,
-           //             Email = customer.Email,
-           //             Address = customer.Address
-           //         };
-           //         _sqlcontext.Customers.Add(customerEntity);
-           //         await _sqlcontext.SaveChangesAsync();
-                
+            var customerEntity = await _sqlcontext.Customers.Include(x => x.Address).FirstAsync(x => x.Id == order.CustomerID);
+
+
+            //___________________________________________________________________
+
+            var addressEntity = new AddressEntity
+            {
+                Id = customerEntity.Address.Id,
+                City = customerEntity.Address.City,
+                Street = customerEntity.Address.Street,
+                ZipCode = customerEntity.Address.ZipCode
+            };
+
+            //_________________________________________________________     
+            //Get with ID
+            var orderRows = new List<OrderItemsEntity>();  // creating OrdersItemEntity
+            foreach (var item in order.OrderItem)
+                orderRows.Add(new OrderItemsEntity
+                {
+                    
+                   // OrderId = order.Id,
+                    ProductName = item.ProductName,
+                    ProductPrice = item.Price,
+                    Quantity    = item.Quantity
+
+                });
             
+            //------------------------------------------------------
+
+
+            //__________________________________________________________________
+            var orderEntity = new OrderEntity
+            {
+                //Id = order.Id,
+                Address = $"{addressEntity.Street}, {addressEntity.City} {addressEntity.ZipCode}",
+                CustomerId = customerEntity.Id,
+                CustomerName = $"{customerEntity.FirstName} {customerEntity.FirstName}",
+                OrderDate = order.OrderDate,
+                OrderRows = orderRows       
+               
+            };
 
 
 
 
-            //____________________________________________________
+            _sqlcontext.Orders.Add(orderEntity);
+            await _sqlcontext.SaveChangesAsync();           
+
+           
 
 
-            //_sqlcontext.Orders.Add(order);
-            //await _sqlcontext.SaveChangesAsync();
 
-            //return CreatedAtAction("GetOrderEntity", new { id = orderEntity.Id }, orderEntity);
-            //throw new NotImplementedException();
+
+
         }
     }
 }

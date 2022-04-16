@@ -18,10 +18,10 @@ namespace assignment_Dataaccess.Controllers
         }
         #region Create
         [HttpPost]
-        public async Task<ActionResult> CreateProduct(OrderEntity orders) //Om man vill kan man här konvertera objektet här
+        public async Task<ActionResult> CreateProduct(OrderForm orders) //Om man vill kan man här konvertera objektet här
         {
 
-            await _orderService.CreateAsync(orders);
+            await _orderService.CreateAsyncTwo(orders);
 
             return Ok();
             //try
