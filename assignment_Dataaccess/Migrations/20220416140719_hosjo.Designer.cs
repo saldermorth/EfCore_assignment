@@ -12,8 +12,8 @@ using assignment_Dataaccess.Models;
 namespace assignment_Dataaccess.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20220415170529_init")]
-    partial class init
+    [Migration("20220416140719_hosjo")]
+    partial class hosjo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -104,26 +104,6 @@ namespace assignment_Dataaccess.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("assignment_Dataaccess.Models.Enities.Order_Item", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnOrder(0);
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderItemId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Order_Items");
-                });
-
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -158,13 +138,10 @@ namespace assignment_Dataaccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderEntityId")
                         .HasColumnType("int");
 
                     b.Property<int?>("OrderItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Order_ItemId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -172,9 +149,7 @@ namespace assignment_Dataaccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("Order_ItemId");
+                    b.HasIndex("OrderEntityId");
 
                     b.ToTable("OrderItems");
                 });
@@ -243,21 +218,9 @@ namespace assignment_Dataaccess.Migrations
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderItemsEntity", b =>
                 {
-                    b.HasOne("assignment_Dataaccess.Models.Enities.OrderEntity", "Order")
-                        .WithMany()
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("assignment_Dataaccess.Models.Enities.Order_Item", "Order_Item")
-                        .WithMany()
-                        .HasForeignKey("Order_ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Order_Item");
+                    b.HasOne("assignment_Dataaccess.Models.Enities.OrderEntity", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderEntityId");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.ProductsEntity", b =>
@@ -284,6 +247,11 @@ namespace assignment_Dataaccess.Migrations
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.CustomerEntity", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderEntity", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

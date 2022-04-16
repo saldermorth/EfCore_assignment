@@ -8,7 +8,7 @@ namespace assignment_Dataaccess.Services
     //Git check
     public interface IOrderService
     {
-        Task CreateAsync(OrderForm order);
+        Task CreateAsync(OrderEntity order);
         Task<List<OrderEntity>> ReadAsync();
         Task<Order> ReadAsyncById(int id);
         //Task<bool> UpdateAsyncById(int id, List<CartItemUpdate> orderForm);
@@ -23,7 +23,7 @@ namespace assignment_Dataaccess.Services
             _sqlcontext = context;
         }
 
-        public async Task CreateAsync(OrderForm order)
+        public async Task CreateAsync(OrderEntity order)
         {
             var orderList = new List<OrderItemsEntity>();
             /*
@@ -37,9 +37,9 @@ namespace assignment_Dataaccess.Services
           
             if (!await _sqlcontext.OrderItems.AnyAsync(x => x.Id == order.Id)) // check if products id exits. or return.
             {
-                foreach (var cartitem in order.OrderItem) // För varje cartItem Gör följande.
+                //foreach (var cartitem in order.OrderItem) // För varje cartItem Gör följande.
                 {
-                    if (!await _sqlcontext.Products.AnyAsync(x => x.Id == cartitem.Id))// om produkten finns skapa en order
+                  //  if (!await _sqlcontext.Products.AnyAsync(x => x.Id == cartitem.Id))// om produkten finns skapa en order
                     {
                         /*Jag måste skicka in en OrderItemsEntity och en OrdertEntity i DB därför behöver jag omvandla hära
                          * OrderItemEntity. Som har:

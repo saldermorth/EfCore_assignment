@@ -9,16 +9,12 @@ namespace assignment_Dataaccess.Models.Enities
 
         [Key, Column(Order = 0)]      
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-
-        
-        public virtual OrderEntity Order { get; set; } = null!;
-        //public ProductsEntity ProductsListItem { get; set; } = null!; //Fk to Producs Table
+        public int Id { get; set; }      
+                
         [Required]
-        public int Quantity { get; set; }
-        //public OrderEntity Order { get; set; } = null!;//Fk from Orders table
+        public int Quantity { get; set; }      
         
-        public virtual Order_Item Order_Item { get; set; } = null!;
-        public int? OrderItemId { get; set; }
+        public virtual ProductsEntity Products { get; set; }
+       
     }
 }

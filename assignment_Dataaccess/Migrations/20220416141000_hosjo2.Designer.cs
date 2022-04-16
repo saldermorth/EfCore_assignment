@@ -12,8 +12,8 @@ using assignment_Dataaccess.Models;
 namespace assignment_Dataaccess.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20220415170653_init2")]
-    partial class init2
+    [Migration("20220416141000_hosjo2")]
+    partial class hosjo2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -104,26 +104,6 @@ namespace assignment_Dataaccess.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("assignment_Dataaccess.Models.Enities.Order_Item", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnOrder(0);
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrderItemId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("OrderItemsConnection");
-                });
-
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -138,9 +118,6 @@ namespace assignment_Dataaccess.Migrations
 
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -158,13 +135,10 @@ namespace assignment_Dataaccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("OrderId")
+                    b.Property<int?>("OrderEntityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrderItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Order_ItemId")
+                    b.Property<int>("ProductsId")
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
@@ -172,9 +146,9 @@ namespace assignment_Dataaccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrderId");
+                    b.HasIndex("OrderEntityId");
 
-                    b.HasIndex("Order_ItemId");
+                    b.HasIndex("ProductsId");
 
                     b.ToTable("OrderItems");
                 });
@@ -243,21 +217,17 @@ namespace assignment_Dataaccess.Migrations
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderItemsEntity", b =>
                 {
-                    b.HasOne("assignment_Dataaccess.Models.Enities.OrderEntity", "Order")
+                    b.HasOne("assignment_Dataaccess.Models.Enities.OrderEntity", null)
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderEntityId");
+
+                    b.HasOne("assignment_Dataaccess.Models.Enities.ProductsEntity", "Products")
                         .WithMany()
-                        .HasForeignKey("OrderId")
+                        .HasForeignKey("ProductsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("assignment_Dataaccess.Models.Enities.Order_Item", "Order_Item")
-                        .WithMany()
-                        .HasForeignKey("Order_ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Order");
-
-                    b.Navigation("Order_Item");
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.ProductsEntity", b =>
@@ -284,6 +254,11 @@ namespace assignment_Dataaccess.Migrations
             modelBuilder.Entity("assignment_Dataaccess.Models.Enities.CustomerEntity", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("assignment_Dataaccess.Models.Enities.OrderEntity", b =>
+                {
+                    b.Navigation("OrderItems");
                 });
 #pragma warning restore 612, 618
         }

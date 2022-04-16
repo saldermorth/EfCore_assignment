@@ -24,7 +24,7 @@ namespace assignment_Dataaccess.Models
         public virtual DbSet<OrderEntity> Orders { get; set; } = null!;
         public virtual DbSet<OrderItemsEntity> OrderItems { get; set; } = null!;      
         public virtual DbSet<ProductsEntity> Products { get; set; } = null!;
-        public virtual DbSet<Order_Item> OrderItemsConnection { get; set;  } = null !;
+     
        
 
 

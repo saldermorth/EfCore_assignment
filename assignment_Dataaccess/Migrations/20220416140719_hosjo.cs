@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace assignment_Dataaccess.Migrations
 {
-    public partial class init : Migration
+    public partial class hosjo : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -35,20 +35,6 @@ namespace assignment_Dataaccess.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Categorys", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Order_Items",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
-                    OrderItemId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Order_Items", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -124,26 +110,18 @@ namespace assignment_Dataaccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrderId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
-                    Order_ItemId = table.Column<int>(type: "int", nullable: false),
-                    OrderItemId = table.Column<int>(type: "int", nullable: true)
+                    OrderItemId = table.Column<int>(type: "int", nullable: true),
+                    OrderEntityId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OrderItems", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OrderItems_Order_Items_Order_ItemId",
-                        column: x => x.Order_ItemId,
-                        principalTable: "Order_Items",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_OrderItems_Orders_OrderId",
-                        column: x => x.OrderId,
+                        name: "FK_OrderItems_Orders_OrderEntityId",
+                        column: x => x.OrderEntityId,
                         principalTable: "Orders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -164,14 +142,9 @@ namespace assignment_Dataaccess.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_Order_ItemId",
+                name: "IX_OrderItems_OrderEntityId",
                 table: "OrderItems",
-                column: "Order_ItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OrderItems_OrderId",
-                table: "OrderItems",
-                column: "OrderId");
+                column: "OrderEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomersId",
@@ -197,9 +170,6 @@ namespace assignment_Dataaccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
-
-            migrationBuilder.DropTable(
-                name: "Order_Items");
 
             migrationBuilder.DropTable(
                 name: "Orders");
