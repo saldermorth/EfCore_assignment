@@ -8,20 +8,38 @@ namespace assignment_Dataaccess.Services
     //Git check
     public interface IOrderService
     {
-        Task CreateAsync(OrderEntity order);
-        Task<List<OrderEntity>> ReadAsync();
+
+        Task<List<OrderForm>> ReadAsync();
+        Task<bool> Delete(int id);
         Task<Order> ReadAsyncById(int id);
         Task CreateAsyncTwo(OrderForm order);
-        //Task<bool> UpdateAsyncById(int id, List<CartItemUpdate> orderForm);
+        Task<bool> UpdateAsyncById(int id, OrderUpdateEntity orderForm);
 
     }
     public class OrderService : IOrderService
     {
         private readonly SqlContext _sqlcontext;
 
+
         public OrderService(SqlContext context)
         {
             _sqlcontext = context;
+
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            var orderEntity = await _sqlcontext.Orders.FindAsync(id);
+            if (orderEntity != null)
+            {
+                _sqlcontext.Orders.Remove(orderEntity);
+                await _sqlcontext.SaveChangesAsync();
+                return true;
+            }
+
+
+
+            return false;
         }
 
 
@@ -54,20 +72,18 @@ namespace assignment_Dataaccess.Services
                 orderRows.Add(new OrderItemsEntity
                 {
 
-                    // OrderId = order.Id,
+                    //OrderId = order.Id,
                     ProductName = item.ProductName,
                     ProductPrice = item.Price,
                     Quantity = item.Quantity
 
                 });
+            
 
-            //------------------------------------------------------
-
-
-            //__________________________________________________________________
+            //__________________________________________________________________ 
             var orderEntity = new OrderEntity
             {
-                //Id = order.Id,
+                
                 Address = $"{addressEntity.Street}, {addressEntity.City} {addressEntity.ZipCode}",
                 CustomerId = customerEntity.Id,
                 CustomerName = $"{customerEntity.FirstName} {customerEntity.FirstName}",
@@ -75,9 +91,6 @@ namespace assignment_Dataaccess.Services
                 OrderRows = orderRows
 
             };
-
-
-
 
             _sqlcontext.Orders.Add(orderEntity);
             await _sqlcontext.SaveChangesAsync();
@@ -89,138 +102,99 @@ namespace assignment_Dataaccess.Services
 
 
         }
-        public async Task CreateAsync(OrderEntity order)
+
+
+        public async Task<List<OrderForm>> ReadAsync() // Todo
         {
-            var orderList = new List<OrderItemsEntity>();
-            /*
-             Här tar jag in en OrderForm ifrån användaren Som har:
-            Id
-            CustomerId
-            ICollection<OrderItem> = Id, ProductID och Quantity.
-            DateTime             
-             */
+            var items = new List<OrderForm>();
 
-          
-           // if (!await _sqlcontext.OrderItems.AnyAsync(x => x.Id == order.Id)) // check if products id exits. or return.
+            var orderrows = new List<CartItemUpdate>();
+
+            //create list of orderlistitems
+
+            foreach (var item in await _sqlcontext.Orders.Include(x => x.OrderRows).ToListAsync())
             {
-                //foreach (var cartitem in order.OrderItem) // För varje cartItem Gör följande.
+                foreach (var iteminlist in item.OrderRows)
                 {
-                  //  if (!await _sqlcontext.Products.AnyAsync(x => x.Id == cartitem.Id))// om produkten finns skapa en order
+                    orderrows.Add(new CartItemUpdate
                     {
-                        /*Jag måste skicka in en OrderItemsEntity och en OrdertEntity i DB därför behöver jag omvandla hära
-                         * OrderItemEntity. Som har:
-                         * Id
-                         * 
-                         * 
-                         */
-
-                        var orderItemsEntity = new OrderItemsEntity
-                        {//ProductsId
-                                                                      
-                            //Quantity = cartitem.Quantity                            
-                        };
-                        //
-
-
-                        orderList.Add(orderItemsEntity); // Add to the list of items in order
-                        _sqlcontext.OrderItems.Add(orderItemsEntity);//Products är null
-                        await _sqlcontext.SaveChangesAsync();// fail hära pga objekt finns inte i under categorier
-                                                             //sparar inte i databasen nu
-
-
-                        // TODO enter Custermer ID here
-                        //var orderEntity = new OrderEntity
-                        //{
-                        //    Id = order.Id,
-                        //    OrderDate = order.OrderDate,
-                        //    CartItem = orderList
-                        //};
-
-                        //_sqlcontext.Orders.Add(orderEntity);
-                        //await _sqlcontext.SaveChangesAsync();
-                    }
-                    
+                        Id = item.Id,
+                        Price = iteminlist.ProductPrice,
+                        Quantity = iteminlist.Quantity,
+                        ProductName = iteminlist.ProductName,
+                        ProductID = iteminlist.Id
+                    });
                 }
             }
-        }
 
-        public async Task<List<OrderEntity>> ReadAsync() // Todo
-        {
-            var items = new List<OrderEntity>();
 
-            //foreach (var item in await _sqlcontext.Orders.Include(x => x.Customers).Include(x => x.products).ToListAsync())
-            //    items.Add(new OrderEntity 
-            //    {
-            //     Id = item.Id,
-            //     CartItem  = item.CartItem,
-            //     Customers = item.Customers,
-            //     OrderDate  =   item.OrderDate,
-            //     //products   =   item.products
+            //create orderform and insert the list of orderitems
 
-            //    });
+
+
+            foreach (var item in await _sqlcontext.Orders.ToListAsync())
+            {
+                items.Add(new OrderForm
+                {
+                    Id = item.Id,
+                    CustomerID = item.CustomerId,
+                    OrderDate = item.OrderDate,
+                    OrderItem = orderrows
+                });
+            }
+
 
             return items;
         }
 
-       
+
 
         public Task<Order> ReadAsyncById(int id)
         {
             throw new NotImplementedException();
         }
 
-       
-
-        //public Task<bool> UpdateAsyncById(int id, List<CartItemUpdate> orderform)
-        //{
-        //   //// var items = await _sqlcontext.Orders.Include(x => x.Customers).Include(x => x.CartItem).ToListAsync();
-
-        //   // //var order = items.FirstOrDefault(x => x.Id == id);
-
-        //   // bool orderUpdated = false;
-
-        //   // if (order != null && orderform != null)
-        //   // {
-                
-        //   //    foreach (var item in orderform)
-        //   //     {
-        //   //         order.CartItem.Add(new OrderItemsEntity
-        //   //         { 
-        //   //         Id = item.ProductID,
-        //   //         Quantity = item.Quantity,
-        //   //                            });
-        //   //     }
-        //   //     orderUpdated = true;
 
 
-        //   //     _sqlcontext.Entry(order).State = EntityState.Modified;
-        //   //     await _sqlcontext.SaveChangesAsync();
+        public async Task<bool> UpdateAsyncById(int orderid, OrderUpdateEntity orderform)
+        {
 
-        //   //      List<OrderItem> newCart = new List<OrderItem>();
-        //   //     foreach (var item in order.CartItem)
-        //   //     {
-        //   //         newCart.Add(  new OrderItem
-        //   //         {
-        //   //             Id = item.Id,
-                       
-        //   //             Quantity = item.Quantity
-        //   //         });
-        //   //     }
+            /*
+             * Här får vi in ett orderid och en OrderUpdateEntity med detta vill vi uppdatera en befintlig order.
+             * 
+             * 
+             */
 
 
-        //        //var updatedOrder = new OrderForm
-        //        //{
-        //        //    Id  = order.Id,
-        //        //    CustomerID = order.Customers.Id,
-        //        //    OrderItem = order.CartItem 
-        //        //    }
-        //        //};
-        //        //return null;
-        //    }
+            var orderToUpdate = await _sqlcontext.Orders.FindAsync(orderid);
+            var newListOfItems = new List<OrderItemsEntity>();
+            //---------------------------------------------------
+            //Updated list from user 
+            foreach (var item in orderform.cartitems)
+            {
+                newListOfItems.Add(new OrderItemsEntity
+                {
+                    Id = item.Id,
+                    OrderId = orderid,
+                    ProductName = item.ProductName,
+                    ProductPrice = item.Price,
+                    Quantity = item.Quantity
+                });
+            }
 
-        //  return null;
-        //}
 
-       
+            if (orderToUpdate != null)
+            {
+                orderToUpdate.OrderRows = newListOfItems;
+
+                _sqlcontext.Entry(orderToUpdate).State = EntityState.Modified;
+                await _sqlcontext.SaveChangesAsync();
+                return true;         
+            }
+            return false;
+
+        }
+
+
     }
 }

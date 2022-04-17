@@ -53,19 +53,16 @@ namespace assignment_Dataaccess.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomerEntity(int id) //TODO
         {
-            //var customerEntity = await _productService.Delete(id);
-            //if (customerEntity == null)
-            //{
-            //    return NotFound();
-            //}
+            var customerentity = await _productService.Delete(id);
+            if (!customerentity)
+            {
+                return NotFound();
+            }            
 
-            //_context.Customers.Remove(customerEntity);
-            //await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok($"Order with id: {id} removed.");
         }
         #endregion
-        #endregion
 
+        #endregion
     }
 }

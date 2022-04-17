@@ -11,7 +11,8 @@ namespace assignment_Dataaccess.Services
         Task CreateAsync(ProductForm product);
         Task<ActionResult<IEnumerable<ProductForm>>> ReadAsync();
         Task<ProductForm> ReadAsyncById(int id);
-        
+        Task<bool> Delete(int id);
+
 
 
     }
@@ -59,6 +60,18 @@ namespace assignment_Dataaccess.Services
             }
         }
 
+        public async Task<bool> Delete(int id)
+        {
+            var productEntity = await _sqlContext.Products.FindAsync(id);
+            if (productEntity != null)
+            {
+                _sqlContext.Products.Remove(productEntity);
+                await _sqlContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
         public async Task<ActionResult<IEnumerable<ProductForm>>> ReadAsync()
         {
                       
@@ -68,6 +81,7 @@ namespace assignment_Dataaccess.Services
             foreach (var item in await _sqlContext.Products.Include(x => x.Category).ToListAsync())
                 allProducts.Add(new ProductForm
                 {
+                    Id = item.Id,
                   ProductName = item.Name,
                   Description = item.Description,
                   Price = item.Price,

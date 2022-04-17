@@ -24,7 +24,7 @@ namespace assignment_Dataaccess.Models.Enities
         //[Required]
         //public string OrderStatus { get; set; } = null!;
 
-        public virtual ICollection<OrderItemsEntity> OrderRows { get; set; } = null!;
+        public virtual List<OrderItemsEntity> OrderRows { get; set; } = null!;
 
 
 

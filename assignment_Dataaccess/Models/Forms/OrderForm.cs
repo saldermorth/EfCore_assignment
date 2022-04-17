@@ -4,7 +4,7 @@ namespace assignment_Dataaccess.Models.Forms
 {
     public class OrderForm
     {
-        
+        public int Id { get; set; }
         public int CustomerID { get; set; }
 
 

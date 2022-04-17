@@ -10,7 +10,7 @@ namespace assignment_Dataaccess.Models
         public decimal Price { get; set; }
         public int Stock { get; set; }
         
-        public Vendors Vendors { get; set; } = null!;
+        
         public Category Category { get; set; } = null!;
     }
 }
