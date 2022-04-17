@@ -1,4 +1,5 @@
-﻿using assignment_Dataaccess.Models;
+﻿using assignment_Dataaccess.Filters;
+using assignment_Dataaccess.Models;
 using assignment_Dataaccess.Models.Enities;
 using assignment_Dataaccess.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +9,7 @@ namespace assignment_Dataaccess.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [UseApiKey]
     public class CustomerController : ControllerBase
     {
         private readonly SqlContext _context;
@@ -19,8 +21,8 @@ namespace assignment_Dataaccess.Controllers
             _context = context; //To do ta bort
         }
 
-       
 
+        
 
         #region Create
         [HttpPost]
@@ -55,6 +57,7 @@ namespace assignment_Dataaccess.Controllers
         #endregion
         #region Read
         [HttpGet]
+        
         public async Task<ActionResult<IEnumerable<Customer>>> Read()
         {           
                         return await _customerService.ReadAsync();
@@ -88,7 +91,9 @@ namespace assignment_Dataaccess.Controllers
 
         #endregion
         #region Delete
+        
         [HttpDelete("{id}")]
+        
         public async Task<IActionResult> Delete(int id)
         {
             bool found = await _customerService.Delete(id);

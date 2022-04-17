@@ -74,8 +74,6 @@ namespace assignment_Dataaccess.Services
 
         public async Task<ActionResult<IEnumerable<ProductForm>>> ReadAsync()
         {
-                      
-
             var allProducts = new List<ProductForm>();
 
             foreach (var item in await _sqlContext.Products.Include(x => x.Category).ToListAsync())
