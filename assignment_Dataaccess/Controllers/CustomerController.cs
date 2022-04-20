@@ -9,7 +9,7 @@ namespace assignment_Dataaccess.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [UseApiKey]
+    //[UseApiKey]
     public class CustomerController : ControllerBase
     {
         private readonly SqlContext _context;
@@ -58,7 +58,7 @@ namespace assignment_Dataaccess.Controllers
         #region Read
         [HttpGet]
         
-        public async Task<ActionResult<IEnumerable<Customer>>> Read()
+        public async Task<ActionResult<IEnumerable<CustomerForm>>> Read()
         {           
                         return await _customerService.ReadAsync();
         }
@@ -66,6 +66,7 @@ namespace assignment_Dataaccess.Controllers
         [HttpGet("{email}")]
         public async Task<ActionResult<CustomerForm>> ReadByEmail(string email)
         {
+
             return await _customerService.ReadAsyncByEmail(email);
         }
 
@@ -76,8 +77,11 @@ namespace assignment_Dataaccess.Controllers
         {
             
           var result = await _customerService.UpdateAsync(id, customer);
-
-          
+            if (result != null)
+            {
+                return Ok(result);
+               
+            }
 
             return NoContent();
         }

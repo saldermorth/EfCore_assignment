@@ -1,4 +1,5 @@
-﻿using assignment_Dataaccess.Models;
+﻿using assignment_Dataaccess.Filters;
+using assignment_Dataaccess.Models;
 using assignment_Dataaccess.Models.Forms;
 using assignment_Dataaccess.Services;
 using Microsoft.AspNetCore.Http;
@@ -8,6 +9,7 @@ namespace assignment_Dataaccess.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [UseApiKey]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -26,12 +28,14 @@ namespace assignment_Dataaccess.Controllers
         #endregion
         #region Read
         [HttpGet]
+        [UseAdminKey]
         public async Task<IActionResult> GetAllCategories()
         {
             return new OkObjectResult(await _productService.ReadAsync());
         }
 
         [HttpGet("{id}")]
+         //TODO - funkar ej? Går att använda utan nyckeln.
         public async Task<IActionResult> GetById(int id)
         {
             var product = await _productService.ReadAsyncById(id);

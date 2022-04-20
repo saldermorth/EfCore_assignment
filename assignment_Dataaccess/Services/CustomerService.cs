@@ -9,7 +9,7 @@ namespace assignment_Dataaccess.Services
     public interface ICustomerService
     {
         Task CreateAsync(Customer customer);
-        Task<ActionResult<IEnumerable<Customer>>> ReadAsync();       
+        Task<ActionResult<IEnumerable<CustomerForm>>> ReadAsync();       
         Task<CustomerForm> ReadAsyncByEmail(string epost);
         Task<bool> Delete(int id);
         Task<CustomerForm> UpdateAsync(int id, CustomerForm customer);
@@ -68,25 +68,32 @@ namespace assignment_Dataaccess.Services
                 await _sqlcontext.SaveChangesAsync();
                 return true;
             }
-
-
-
             return false;
         }
 
-        public async Task<ActionResult<IEnumerable<Customer>>> ReadAsync()
+        public async Task<ActionResult<IEnumerable<CustomerForm>>> ReadAsync()
         {
+            /*  public int Id { get; set; }
+        public string FirstName { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string Email { get; set; } = null!;
+        public string Street { get; set; } = null!;
+        public int ZipCode { get; set; }
+        public string City { get; set; } = null!;   */
 
+            var items = new List<CustomerForm>();
 
-            var items = new List<Customer>();
-
-            foreach (var item in await _sqlcontext.Customers.ToListAsync())
-                items.Add(new Customer
+            foreach (var item in await _sqlcontext.Customers.Include(x => x.Address).ToListAsync())
+                items.Add(new CustomerForm
                 {
                     Id = item.Id,
                     FirstName = item.FirstName,
                     LastName = item.LastName,
-                    Email = item.Email
+                    Email = item.Email,
+                    Street = item.Address.Street,
+                    ZipCode = item.Address.ZipCode,
+                    City = item.Address.City,
+
                 });
 
             return items;
@@ -152,7 +159,7 @@ namespace assignment_Dataaccess.Services
                 return updatedCustomer;
             }
 
-            return null;
+            return null!;
         }
 
 
