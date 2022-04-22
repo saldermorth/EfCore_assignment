@@ -8,7 +8,8 @@
         public string Email { get; set; } = null!;
         public string Street { get; set; } = null!;
         public int ZipCode { get; set; }
-        public string City { get; set; } = null!;        
+        public string City { get; set; } = null!;
+        public string Password { get; set; } = null!;
 
     }
 }

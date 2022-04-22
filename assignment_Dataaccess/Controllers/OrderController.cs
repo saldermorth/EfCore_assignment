@@ -10,7 +10,7 @@ namespace assignment_Dataaccess.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [UseApiKey]
+    //[UseApiKey]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
@@ -40,7 +40,7 @@ namespace assignment_Dataaccess.Controllers
         #region Read
 
         [HttpGet]
-        [UseAdminKey]
+        //[UseAdminKey]
         public async Task<IActionResult> GetAllCategories()
         {
             return new OkObjectResult(await _orderService.ReadAsync());

@@ -30,7 +30,7 @@ namespace assignment_Dataaccess.Controllers
         {
             try
             {
-                await _customerService.CreateAsync(new Customer
+                await _customerService.CreateAsync(new Models.Customer
                 {
                     Id = customer.Id,
                     FirstName = customer.FirstName,

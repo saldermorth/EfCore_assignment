@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace assignment_Dataaccess.Models.Enities
 {
@@ -27,9 +29,34 @@ namespace assignment_Dataaccess.Models.Enities
 
         [Required]
         public int AddressId { get; set; }
-
+        [Required]
+        public byte[] PasswordHash { get; private set; }
+        [Required]
+        public byte[] Salt { get; private set; }
         public virtual AddressEntity Address { get; set; } = null!; // FK to address table
         public ICollection<OrderEntity>? Orders { get; set; } = null!; // FK from orders table
 
+        public void CreateSecurePassword(string password) {
+            using var hmac = new HMACSHA512();
+            Salt = hmac.Key;
+            PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+            hmac.Clear();        
+        }
+        public bool CompareSecurePassword(string password)
+        {
+            using (var hmac = new HMACSHA512(Salt))
+            {
+                var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < hash.Length; i++)
+                {
+                    if (hash[i] != PasswordHash[i])
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            
+        }
     }
 }

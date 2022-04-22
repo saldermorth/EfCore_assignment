@@ -8,7 +8,7 @@ namespace assignment_Dataaccess.Services
 {
     public interface ICustomerService
     {
-        Task CreateAsync(Customer customer);
+        Task CreateAsync(Models.Customer customer);
         Task<ActionResult<IEnumerable<CustomerForm>>> ReadAsync();       
         Task<CustomerForm> ReadAsyncByEmail(string epost);
         Task<bool> Delete(int id);
