@@ -32,6 +32,7 @@ namespace assignment_Dataaccess.Services
             if (!await _sqlcontext.Customers.AnyAsync(x =>
             x.Email == customer.Email))//Går inte in i if satsen
             {
+                //Todo kolla om adressen redan finns.
                 var addressEntity = await _sqlcontext.Addresses.FirstOrDefaultAsync(x => x.Id == customer.Address.Id); //TODO vad får den in .Om addressid finns använd det annars skapa
                 if (addressEntity == null)
                 {

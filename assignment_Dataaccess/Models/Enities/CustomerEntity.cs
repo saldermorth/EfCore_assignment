@@ -30,9 +30,9 @@ namespace assignment_Dataaccess.Models.Enities
         [Required]
         public int AddressId { get; set; }
         [Required]
-        public byte[] PasswordHash { get; private set; }
+        public byte[] PasswordHash { get; private set; } = null!;
         [Required]
-        public byte[] Salt { get; private set; }
+        public byte[] Salt { get; private set; } = null!;
         public virtual AddressEntity Address { get; set; } = null!; // FK to address table
         public ICollection<OrderEntity>? Orders { get; set; } = null!; // FK from orders table
 

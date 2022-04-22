@@ -2,6 +2,7 @@
 using assignment_Dataaccess.Models;
 using assignment_Dataaccess.Models.Enities;
 using assignment_Dataaccess.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ namespace assignment_Dataaccess.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     //[UseApiKey]
     public class CustomerController : ControllerBase
     {

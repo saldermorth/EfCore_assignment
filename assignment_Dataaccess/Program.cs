@@ -33,7 +33,9 @@ app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseAuthentication(); //Vem är du
+
+app.UseAuthorization(); //Vad får du göra
 
 app.MapControllers();
 
