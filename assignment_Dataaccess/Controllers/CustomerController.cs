@@ -10,7 +10,7 @@ namespace assignment_Dataaccess.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize]
+    [Authorize]
     //[UseApiKey]
     public class CustomerController : ControllerBase
     {
