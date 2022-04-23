@@ -12,6 +12,7 @@ namespace assignment_Dataaccess.Services
         Task<ActionResult<IEnumerable<ProductForm>>> ReadAsync();
         Task<ProductForm> ReadAsyncById(int id);
         Task<bool> Delete(int id);
+        Task<bool> UpdateAsync(int id, ProductForm product);
 
 
 
@@ -133,6 +134,27 @@ namespace assignment_Dataaccess.Services
             return null;
 
             
+        }
+
+        public async Task<bool> UpdateAsync(int id, ProductForm product)
+        {
+            var items = await _sqlContext.Products.Include(x => x.Category).ToListAsync();
+
+            var productEntity = items.FirstOrDefault(x => x.Id == id);
+
+            if (productEntity !=null)
+            {
+                productEntity.Name = product.ProductName;
+                productEntity.Price = product.Price;
+                productEntity.Stock = product.Stock;
+                productEntity.Vendor = product.VendorName;               
+                productEntity.Description = product.Description;
+                _sqlContext.Entry(productEntity).State = EntityState.Modified;
+                await _sqlContext.SaveChangesAsync();
+                return true;
+            }
+            return false;
+           
         }
     }
 }

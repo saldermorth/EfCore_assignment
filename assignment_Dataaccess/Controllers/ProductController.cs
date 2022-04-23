@@ -9,7 +9,7 @@ namespace assignment_Dataaccess.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [UseApiKey]
+    //[UseApiKey]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -35,7 +35,7 @@ namespace assignment_Dataaccess.Controllers
         }
 
         [HttpGet("{id}")]
-         //TODO - funkar ej? Går att använda utan nyckeln.
+         
         public async Task<IActionResult> GetById(int id)
         {
             var product = await _productService.ReadAsyncById(id);
@@ -50,12 +50,22 @@ namespace assignment_Dataaccess.Controllers
         }
         #endregion
         #region Update
-        //TODO implement
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutCategory(int id, ProductForm product)
+        {
+
+            var result = await _productService.UpdateAsync(id, product);
+            if (result)
+            {
+                return Ok("Product Updated successful");
+            }
+            return NoContent();
+        }
         #endregion
+       
         #region Delete
-           #region Delete
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCustomerEntity(int id) //TODO
+        public async Task<IActionResult> DeleteCustomerEntity(int id) 
         {
             var customerentity = await _productService.Delete(id);
             if (!customerentity)
@@ -67,6 +77,5 @@ namespace assignment_Dataaccess.Controllers
         }
         #endregion
 
-        #endregion
     }
 }

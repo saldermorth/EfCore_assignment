@@ -25,26 +25,38 @@ namespace assignment_Dataaccess.Services
 
         }
 
-        public async Task CreateAsync(Customer customer)// Funkar nu men kommer dubbletter i address tabellen
+        public async Task CreateAsync(Customer customer)
         {
-
 
             if (!await _sqlcontext.Customers.AnyAsync(x =>
             x.Email == customer.Email))//Går inte in i if satsen
             {
+                var newAddress = new AddressEntity();
                 //Todo kolla om adressen redan finns.
-                var addressEntity = await _sqlcontext.Addresses.FirstOrDefaultAsync(x => x.Id == customer.Address.Id); //TODO vad får den in .Om addressid finns använd det annars skapa
-                if (addressEntity == null)
+                var addressEntity = await _sqlcontext.Addresses.ToListAsync(); //TODO vad får den in .Om addressid finns använd det annars skapa
+              
+                if (addressEntity != null)
                 {
-                    addressEntity = new AddressEntity
+                    foreach (var address in addressEntity)
                     {
-                        Street = customer.Address.Street,
-                        ZipCode = customer.Address.ZipCode,
-                        City = customer.Address.City,
+                        if (address.Street == customer.Address.Street && address.City == customer.Address.City && address.ZipCode == customer.Address.ZipCode)
+                        {
+                            customer.Address = address;
+                        }
+                        else if( newAddress.Street == null)
+                        {
+                             newAddress = new AddressEntity
+                            {
+                                Street = customer.Address.Street,
+                                ZipCode = customer.Address.ZipCode,
+                                City = customer.Address.City,
 
-                    };
-                    _sqlcontext.Addresses.Add(addressEntity);
-                    await _sqlcontext.SaveChangesAsync();
+                            };
+                            _sqlcontext.Addresses.Add(newAddress);
+                            await _sqlcontext.SaveChangesAsync();
+                        }      
+                    }               
+                }                          
 
 
                     var customerEntity = new CustomerEntity
@@ -52,11 +64,12 @@ namespace assignment_Dataaccess.Services
                         FirstName = customer.FirstName,
                         LastName = customer.LastName,
                         Email = customer.Email,
-                        Address = customer.Address
+                        Address = customer.Address,
+                        
                     };
                     _sqlcontext.Customers.Add(customerEntity);
                     await _sqlcontext.SaveChangesAsync();
-                }
+                
             }
         }
 
@@ -74,14 +87,7 @@ namespace assignment_Dataaccess.Services
 
         public async Task<ActionResult<IEnumerable<CustomerForm>>> ReadAsync()
         {
-            /*  public int Id { get; set; }
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;
-        public string Email { get; set; } = null!;
-        public string Street { get; set; } = null!;
-        public int ZipCode { get; set; }
-        public string City { get; set; } = null!;   */
-
+         
             var items = new List<CustomerForm>();
 
             foreach (var item in await _sqlcontext.Customers.Include(x => x.Address).ToListAsync())
@@ -142,8 +148,7 @@ namespace assignment_Dataaccess.Services
             {
                 userEntity.FirstName = customer.FirstName;
                 userEntity.LastName = customer.LastName;
-                userEntity.Email = customer.Email;
-                //userEntity.Address = customer.Address;
+                userEntity.Email = customer.Email;                
                 _sqlcontext.Entry(userEntity).State = EntityState.Modified;
                 await _sqlcontext.SaveChangesAsync();
                 var updatedCustomer = new CustomerForm

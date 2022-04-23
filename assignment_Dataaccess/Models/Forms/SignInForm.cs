@@ -2,7 +2,7 @@
 {
     public class SignInForm
     {
-        public string Email { get; set; } = null!;
-        public string Password { get; set; } = null!;
+        public string username { get; set; } = null!;
+        public string password { get; set; } = null!;
     }
 }

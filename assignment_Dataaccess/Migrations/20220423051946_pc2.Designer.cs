@@ -12,8 +12,8 @@ using assignment_Dataaccess.Models;
 namespace assignment_Dataaccess.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20220422101131_login")]
-    partial class login
+    [Migration("20220423051946_pc2")]
+    partial class pc2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

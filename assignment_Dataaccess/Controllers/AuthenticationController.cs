@@ -27,6 +27,8 @@ namespace assignment_Dataaccess.Controllers
         [HttpPost("SignUp")]
         public async Task<IActionResult> SignUp(CustomerForm form)
         {
+            var addresses = await _context.Addresses.ToListAsync();
+            var address = new AddressEntity();
 
             try
             {
@@ -34,12 +36,25 @@ namespace assignment_Dataaccess.Controllers
                 {
                     return new ConflictObjectResult("User already exits");
                 }
-                var address = new AddressEntity
+                if (await _context.Addresses.AnyAsync(x => x.City == form.City))
                 {
-                    City = form.City,
-                    Street = form.Street,
-                    ZipCode = form.ZipCode
-                };
+                    foreach (var item in addresses)
+                    {
+                        if (item.Street == form.Street && item.ZipCode == form.ZipCode)
+                        {
+                            address = item;
+                        }
+                    }                   
+                }
+                else
+                {
+                    address = new AddressEntity
+                    {
+                        City = form.City,
+                        Street = form.Street,
+                        ZipCode = form.ZipCode
+                    };
+                }              
 
                 var CustomerEntity = new CustomerEntity()
                 {
@@ -64,16 +79,18 @@ namespace assignment_Dataaccess.Controllers
         [HttpPost("SignIn")]
         public async Task<IActionResult> SignIn(SignInForm form)  
         {
-            if (string.IsNullOrEmpty(form.Email) || string.IsNullOrEmpty(form.Password))
+            Console.WriteLine(form.username + form.password);
+            if (string.IsNullOrEmpty(form.username) || string.IsNullOrEmpty(form.password))
             {
                 return new BadRequestObjectResult("Email and password must be filled in.");
             }
-            var userEntity = await _context.Customers.FirstOrDefaultAsync(x => x.Email == form.Email);
+            var userEntity = await _context.Customers.FirstOrDefaultAsync(x => x.Email == form.username);
+            Console.WriteLine(userEntity);
             if (userEntity == null)
             {
                 return new BadRequestObjectResult("Incorrect email or password..");
             }
-            if (!userEntity.CompareSecurePassword(form.Password))
+            if (!userEntity.CompareSecurePassword(form.password))
             {
                 return new BadRequestObjectResult("Incorrect email or password..");
             }
