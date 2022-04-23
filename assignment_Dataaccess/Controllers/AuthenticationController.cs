@@ -32,7 +32,7 @@ namespace assignment_Dataaccess.Controllers
             {
                 if (await _context.Customers.AnyAsync(x => x.Email == form.Email))
                 {
-                    return new ConflictObjectResult("USer already exits");
+                    return new ConflictObjectResult("User already exits");
                 }
                 var address = new AddressEntity
                 {
