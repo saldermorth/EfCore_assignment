@@ -31,6 +31,7 @@ namespace assignment_Dataaccess.Controllers
             var addresses = await _context.Addresses.ToListAsync();
             var address = new AddressEntity();
 
+
             try
             {
                 if (await _context.Customers.AnyAsync(x => x.Email == form.Email))
@@ -96,12 +97,20 @@ namespace assignment_Dataaccess.Controllers
                 return new BadRequestObjectResult("Incorrect email or password..");
             }
 
+            string role = "user";
+            if (userEntity.Email.ToLower() == "hans@domain.com")
+            {
+              role = "admin";
+            }
+            
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Role, "admin"),
+                   
+                    new Claim(ClaimTypes.Role, role),
                     new Claim(ClaimTypes.Name, userEntity.Email),
                     new Claim(ClaimTypes.Email, userEntity.Email),
                     new Claim("UserID", userEntity.Id.ToString()),

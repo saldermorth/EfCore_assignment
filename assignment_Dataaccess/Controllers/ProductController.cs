@@ -2,6 +2,7 @@
 using assignment_Dataaccess.Models.Enities;
 using assignment_Dataaccess.Models.Forms;
 using assignment_Dataaccess.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,7 @@ namespace assignment_Dataaccess.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [UseApiKey]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
@@ -28,10 +29,10 @@ namespace assignment_Dataaccess.Controllers
         #endregion
         #region Read
         [HttpGet]
-        [UseAdminKey]
-        public async Task<IActionResult> GetAllCategories()
+        
+        public async Task<ActionResult<IEnumerable<ProductForm>>> GetAllCategories()
         {
-            return new OkObjectResult(await _productService.ReadAsync());
+            return await _productService.ReadAsync();
         }
 
         [HttpGet("{id}")]

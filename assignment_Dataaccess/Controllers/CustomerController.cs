@@ -11,7 +11,7 @@ namespace assignment_Dataaccess.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    //[UseApiKey]
+    
     public class CustomerController : ControllerBase
     {
         private readonly SqlContext _context;

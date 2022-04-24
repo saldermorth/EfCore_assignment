@@ -32,9 +32,7 @@ builder.Services.AddAuthentication(x =>
         {
             if (string.IsNullOrEmpty(context.Principal.Identity.Name))//ClaimType Name
             {
-                context.Fail("Unauthorized");
-
-                
+                context.Fail("Unauthorized");                
             }
             return Task.CompletedTask;
         }
