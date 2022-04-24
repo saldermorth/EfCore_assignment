@@ -9,7 +9,7 @@ namespace assignment_Dataaccess.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[UseApiKey]
+    [UseApiKey]
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;

@@ -13,6 +13,7 @@ namespace assignment_Dataaccess.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class AuthenticationController : ControllerBase
     {
         private readonly SqlContext _context;
@@ -100,6 +101,7 @@ namespace assignment_Dataaccess.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
+                    new Claim(ClaimTypes.Role, "admin"),
                     new Claim(ClaimTypes.Name, userEntity.Email),
                     new Claim(ClaimTypes.Email, userEntity.Email),
                     new Claim("UserID", userEntity.Id.ToString()),

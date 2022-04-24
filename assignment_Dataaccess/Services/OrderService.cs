@@ -78,17 +78,19 @@ namespace assignment_Dataaccess.Services
                     Quantity = item.Quantity
 
                 });
-            
+
 
             //__________________________________________________________________ 
             var orderEntity = new OrderEntity
             {
-                
+
                 Address = $"{addressEntity.Street}, {addressEntity.City} {addressEntity.ZipCode}",
                 CustomerId = customerEntity.Id,
                 CustomerName = $"{customerEntity.FirstName} {customerEntity.FirstName}",
                 OrderDate = order.OrderDate,
-                OrderRows = orderRows
+                OrderRows = orderRows,
+                OrderStatus = "received"
+
 
             };
 

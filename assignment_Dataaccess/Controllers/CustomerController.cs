@@ -21,10 +21,7 @@ namespace assignment_Dataaccess.Controllers
         {
             _customerService = customerService;
             _context = context; //To do ta bort
-        }
-
-
-        
+        }        
 
         //#region Create
         //[HttpPost]
