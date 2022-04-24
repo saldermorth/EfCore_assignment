@@ -13,7 +13,7 @@ namespace assignment_Dataaccess.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+    //Ingen Authorize hära
     public class AuthenticationController : ControllerBase
     {
         private readonly SqlContext _context;
