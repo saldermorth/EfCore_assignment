@@ -23,32 +23,32 @@ namespace assignment_Dataaccess.Controllers
             _context = context; //To do ta bort
         }        
 
-        //#region Create
-        //[HttpPost]
-        //public async Task<ActionResult> CreateProduct(CustomerForm customer) //Om man vill kan man här konvertera objektet här
-        //{
-        //    try
-        //    {
-        //        await _customerService.CreateAsync(new Models.Customer
-        //        {
-        //            Id = customer.Id,
-        //            FirstName = customer.FirstName,
-        //            LastName = customer.LastName,
-        //            Email = customer.Email,
-        //            Address = new AddressEntity
-        //            {
-        //                City = customer.City,
-        //                Street = customer.Street,
-        //                ZipCode = customer.ZipCode
-        //            }
-        //        });
+        #region Create
+        [HttpPost]
+        public async Task<ActionResult> CreateProduct(CustomerForm customer) //Om man vill kan man här konvertera objektet här
+        {
+           try
+           {
+               await _customerService.CreateAsync(new Models.Customer
+               {
+                   Id = customer.Id,
+                   FirstName = customer.FirstName,
+                   LastName = customer.LastName,
+                   Email = customer.Email,
+                   Address = new AddressEntity
+                   {
+                       City = customer.City,
+                       Street = customer.Street,
+                       ZipCode = customer.ZipCode
+                   }
+               });
 
-        //        return Ok();
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return BadRequest();
-        //    }
+               return Ok();
+           }
+           catch (Exception)
+           {
+               return BadRequest();
+           }
 
 
 
